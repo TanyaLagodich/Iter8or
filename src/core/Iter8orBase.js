@@ -6,6 +6,13 @@ import {
     createReverseIterator,
     createTakeIterator,
 } from '../modifiers/index.js';
+import {
+    avg,
+    max,
+    min,
+    reduce,
+    sum,
+} from '../aggregators/index.js';
 
 export default class Iter8orBase {
     constructor(iterable) {
@@ -44,4 +51,28 @@ export default class Iter8orBase {
         return new Iter8orBase(createTakeIterator(this.iterable, n));
     }
 
+    avg(fn) {
+        return avg(this.iterable, fn);
+    }
+
+    max(fn) {
+        return max(this.iterable, fn);
+    }
+
+    min(fn) {
+        return min(this.iterable, fn);
+    }
+
+    reduce(reducer, initialValue) {
+        return reduce(this.iterable, reducer, initialValue);
+    }
+
+    sum(fn) {
+        return sum(this.iterable, fn);
+    }
 }
+
+const result = new Iter8orBase([1, 2, 3])
+    .map(x => x * 2)
+    .filter(x => x > 2)
+    .sum();
