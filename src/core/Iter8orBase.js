@@ -71,8 +71,3 @@ export default class Iter8orBase {
         return sum(this.iterable, fn);
     }
 }
-
-const result = new Iter8orBase([1, 2, 3])
-    .map(x => x * 2)
-    .filter(x => x > 2)
-    .sum();
