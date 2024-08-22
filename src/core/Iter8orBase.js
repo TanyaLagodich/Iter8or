@@ -13,18 +13,52 @@ import {
     reduce,
     sum,
 } from '../aggregators/index.js';
+import { DigitsIterable } from './DigitsIterable.js';
+import { RangeIterable } from './RangeIterable.js';
+import { ObjectIterable } from './ObjectIterable.js';
 
+// interface Options {
+//    digits?: boolean; для создания итератора по цифрам поразрядно
+// }
 export default class Iter8orBase {
-    constructor(iterable) {
-        if (!iterable) {
-            throw new TypeError('Iter8orBase must be an iterable');
+    constructor(iterable, options = {}) {
+        if (iterable === null || iterable === undefined) {
+            throw new TypeError('Cannot create an iterable from null or undefined.');
         }
 
-        this.iterable = iterable;
+        if (typeof iterable === 'boolean') {
+            throw new TypeError('Cannot create an iterable from a boolean.');
+        }
+
+        if (typeof iterable === 'function') {
+            throw new TypeError('Cannot create an iterable from a function.');
+        }
+
+        this.options = options;
+
+        if (!iterable[Symbol.iterator]) {
+            this.createIterable(iterable, options);
+        } else {
+            this.iterable = iterable;
+        }
     }
 
     [Symbol.iterator]() {
         return this.iterable[Symbol.iterator]();
+    }
+
+    createIterable(iterable) {
+        if (typeof iterable === 'number') {
+            if (this.options.digits) {
+                this.iterable = new DigitsIterable(iterable);
+            } else {
+                this.iterable = new RangeIterable(iterable);
+            }
+        } else if (typeof iterable === 'object' && iterable !== null) {
+            this.iterable = new ObjectIterable(iterable);
+        } else {
+            throw new TypeError('Unsupported iterable type.');
+        }
     }
 
     map(fn) {
