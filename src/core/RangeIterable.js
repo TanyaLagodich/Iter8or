@@ -1,5 +1,5 @@
 export class RangeIterable {
-    constructor(number) {
+    constructor(number, async = false) {
         this.number = number;
     }
 
@@ -25,4 +25,3 @@ export class RangeIterable {
 }
 
 
-console.log([...new RangeIterable(12)]);

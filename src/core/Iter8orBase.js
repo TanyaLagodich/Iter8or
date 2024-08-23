@@ -19,6 +19,7 @@ import { ObjectIterable } from './ObjectIterable.js';
 
 // interface Options {
 //    digits?: boolean; для создания итератора по цифрам поразрядно
+//    async?: boolean; для асинхронного итератора
 // }
 export default class Iter8orBase {
     constructor(iterable, options = {}) {
@@ -36,15 +37,30 @@ export default class Iter8orBase {
 
         this.options = options;
 
-        if (!iterable[Symbol.iterator]) {
+        if (!iterable[Symbol.iterator] && !iterable[Symbol.asyncIterator]) {
             this.createIterable(iterable, options);
         } else {
-            this.iterable = iterable;
+            if (this.options.async && !iterable[Symbol.asyncIterator]) {
+                this.iterable = this.convertArrayToAsyncIterable(iterable);
+            } else {
+                this.iterable = iterable;
+            }
         }
     }
 
     [Symbol.iterator]() {
+        if (this.options.async) {
+            throw new TypeError('This is an async iterable. Use Symbol.asyncIterator instead.');
+        }
         return this.iterable[Symbol.iterator]();
+    }
+
+    [Symbol.asyncIterator]() {
+        if (!this.options.async) {
+            throw new TypeError('This is a sync iterable. Use Symbol.iterator instead.');
+        }
+
+        return this.iterable[Symbol.asyncIterator]();
     }
 
     createIterable(iterable) {
@@ -61,28 +77,56 @@ export default class Iter8orBase {
         }
     }
 
+    convertArrayToAsyncIterable(array) {
+        const self = this;
+        return {
+            [Symbol.asyncIterator]() {
+                let index = 0;
+
+                return {
+                    async next() {
+                        if (index < array.length) {
+                            const value = await self.resolveItem(array[index]);
+                            index++;
+                            return { value, done: false };
+                        } else {
+                            return { value: undefined, done: true };
+                        }
+                    }
+                };
+            }
+        };
+    }
+
+    async resolveItem(item) {
+        if (typeof item === 'function') {
+            return await item();
+        }
+        return await item;
+    }
+
     map(fn) {
-        return new Iter8orBase(createMapIterator(this.iterable, fn));
+        return new Iter8orBase(createMapIterator(this.iterable, fn), this.options);
     }
 
     filter(predicate) {
-        return new Iter8orBase(createFilterIterator(this.iterable, predicate));
+        return new this.constructor(createFilterIterator(this.iterable, predicate));
     }
 
     drop(n) {
-        return new Iter8orBase(createDropIterator(this.iterable, n));
+        return new this.constructor(createDropIterator(this.iterable, n));
     }
 
     flatMap(fn) {
-        return new Iter8orBase(createFlatMapIterator(this.iterable, fn));
+        return new this.constructor(createFlatMapIterator(this.iterable, fn));
     }
 
     reverse() {
-        return new Iter8orBase(createReverseIterator(this.iterable));
+        return new this.constructor(createReverseIterator(this.iterable));
     }
 
     take(n) {
-        return new Iter8orBase(createTakeIterator(this.iterable, n));
+        return new this.constructor(createTakeIterator(this.iterable, n));
     }
 
     avg(fn) {
@@ -105,3 +149,26 @@ export default class Iter8orBase {
         return sum(this.iterable, fn);
     }
 }
+
+// const array = [1, 2, 3];
+//
+// console.log([...new Iter8orBase(array).map(i => i + 1)])
+
+
+const asyncIter = new Iter8orBase([
+    () => Promise.resolve(1),
+    () => new Promise(resolve => setTimeout(() => resolve(2), 1000)),
+    Promise.resolve(3),
+], { async: true });
+
+console.log([...asyncIter])
+//
+//
+// (async () => {
+//     for await (const value of asyncIter.map(i => i + 1)) {
+//         console.log('value', value); // 2, 4, 6
+//     }
+// })();
+
+
+
