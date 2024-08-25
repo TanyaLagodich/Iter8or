@@ -50,9 +50,10 @@ export default class Iter8orBase {
 
     [Symbol.iterator]() {
         if (this.options.async) {
-            throw new TypeError('This is an async iterable. Use Symbol.asyncIterator instead.');
+            throw new TypeError('This is a async iterable. Use Symbol.asyncIterator instead.');
+        } else {
+            return this.iterable[Symbol.iterator]();
         }
-        return this.iterable[Symbol.iterator]();
     }
 
     [Symbol.asyncIterator]() {
@@ -110,11 +111,11 @@ export default class Iter8orBase {
     }
 
     filter(predicate) {
-        return new this.constructor(createFilterIterator(this.iterable, predicate));
+        return new Iter8orBase(createFilterIterator(this.iterable, predicate), this.options);
     }
 
     drop(n) {
-        return new this.constructor(createDropIterator(this.iterable, n));
+        return new Iter8orBase(createDropIterator(this.iterable, n), this.options);
     }
 
     flatMap(fn) {
@@ -150,25 +151,26 @@ export default class Iter8orBase {
     }
 }
 
-// const array = [1, 2, 3];
-//
-// console.log([...new Iter8orBase(array).map(i => i + 1)])
+const array = [1, 2, 3, 4, 5];
+const iter = new Iter8orBase(array);
 
+const filteredIter = iter.filter(x => x > 2);
 
-const asyncIter = new Iter8orBase([
+console.log([...filteredIter]); // [3, 4, 5]
+
+const asyncArray = [
     () => Promise.resolve(1),
     () => new Promise(resolve => setTimeout(() => resolve(2), 1000)),
-    Promise.resolve(3),
-], { async: true });
+    () => Promise.resolve(3)
+];
 
-console.log([...asyncIter])
-//
-//
-// (async () => {
-//     for await (const value of asyncIter.map(i => i + 1)) {
-//         console.log('value', value); // 2, 4, 6
-//     }
-// })();
+const asyncIter = new Iter8orBase(asyncArray, { async: true });
+
+(async () => {
+    for await (const item of asyncIter.drop(1)) {
+        console.log(item); // [2, 3]
+    }
+})();
 
 
 
