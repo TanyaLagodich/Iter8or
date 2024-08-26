@@ -38,6 +38,7 @@ export default class Iter8orBase {
         this.options = options;
 
         if (!iterable[Symbol.iterator] && !iterable[Symbol.asyncIterator]) {
+            console.log('??', iterable)
             this.createIterable(iterable, options);
         } else {
             if (this.options.async && !iterable[Symbol.asyncIterator]) {
@@ -123,11 +124,16 @@ export default class Iter8orBase {
     }
 
     reverse() {
-        return new this.constructor(createReverseIterator(this.iterable));
+        console.log(
+            'reverse',
+            this.iterable,
+            new Iter8orBase(createReverseIterator(this.iterable), this.options)
+        )
+        return new Iter8orBase(createReverseIterator(this.iterable), this.options);
     }
 
     take(n) {
-        return new this.constructor(createTakeIterator(this.iterable, n));
+        return new Iter8orBase(createTakeIterator(this.iterable, n), this.options);
     }
 
     avg(fn) {
@@ -154,7 +160,7 @@ export default class Iter8orBase {
 const array = [1, 2, 3, 4, 5];
 const iter = new Iter8orBase(array);
 
-const filteredIter = iter.filter(x => x > 2);
+const filteredIter = iter.reverse();
 
 console.log([...filteredIter]); // [3, 4, 5]
 
@@ -165,9 +171,8 @@ const asyncArray = [
 ];
 
 const asyncIter = new Iter8orBase(asyncArray, { async: true });
-
 (async () => {
-    for await (const item of asyncIter.drop(1)) {
+    for await (const item of asyncIter.reverse()) {
         console.log(item); // [2, 3]
     }
 })();
