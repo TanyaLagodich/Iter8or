@@ -16,6 +16,7 @@ import {
 import { DigitsIterable } from './DigitsIterable.js';
 import { RangeIterable } from './RangeIterable.js';
 import { ObjectIterable } from './ObjectIterable.js';
+import { convertToAsyncIterator } from '../utils/convertToAsyncIterator.js';
 
 // interface Options {
 //    digits?: boolean; для создания итератора по цифрам поразрядно
@@ -38,11 +39,10 @@ export default class Iter8orBase {
         this.options = options;
 
         if (!iterable[Symbol.iterator] && !iterable[Symbol.asyncIterator]) {
-            console.log('??', iterable)
             this.createIterable(iterable, options);
         } else {
             if (this.options.async && !iterable[Symbol.asyncIterator]) {
-                this.iterable = this.convertArrayToAsyncIterable(iterable);
+                this.iterable = convertToAsyncIterator(iterable);
             } else {
                 this.iterable = iterable;
             }
@@ -79,33 +79,33 @@ export default class Iter8orBase {
         }
     }
 
-    convertArrayToAsyncIterable(array) {
-        const self = this;
-        return {
-            [Symbol.asyncIterator]() {
-                let index = 0;
-
-                return {
-                    async next() {
-                        if (index < array.length) {
-                            const value = await self.resolveItem(array[index]);
-                            index++;
-                            return { value, done: false };
-                        } else {
-                            return { value: undefined, done: true };
-                        }
-                    }
-                };
-            }
-        };
-    }
-
-    async resolveItem(item) {
-        if (typeof item === 'function') {
-            return await item();
-        }
-        return await item;
-    }
+    // convertArrayToAsyncIterable(array) {
+    //     const self = this;
+    //     return {
+    //         [Symbol.asyncIterator]() {
+    //             let index = 0;
+    //
+    //             return {
+    //                 async next() {
+    //                     if (index < array.length) {
+    //                         const value = await self.resolveItem(array[index]);
+    //                         index++;
+    //                         return { value, done: false };
+    //                     } else {
+    //                         return { value: undefined, done: true };
+    //                     }
+    //                 }
+    //             };
+    //         }
+    //     };
+    // }
+    //
+    // async resolveItem(item) {
+    //     if (typeof item === 'function') {
+    //         return await item();
+    //     }
+    //     return await item;
+    // }
 
     map(fn) {
         return new Iter8orBase(createMapIterator(this.iterable, fn), this.options);
@@ -120,15 +120,10 @@ export default class Iter8orBase {
     }
 
     flatMap(fn) {
-        return new this.constructor(createFlatMapIterator(this.iterable, fn));
+        return new Iter8orBase(createFlatMapIterator(this.iterable, fn), this.options);
     }
 
     reverse() {
-        console.log(
-            'reverse',
-            this.iterable,
-            new Iter8orBase(createReverseIterator(this.iterable), this.options)
-        )
         return new Iter8orBase(createReverseIterator(this.iterable), this.options);
     }
 
@@ -162,7 +157,6 @@ const iter = new Iter8orBase(array);
 
 const filteredIter = iter.reverse();
 
-console.log([...filteredIter]); // [3, 4, 5]
 
 const asyncArray = [
     () => Promise.resolve(1),
@@ -171,9 +165,11 @@ const asyncArray = [
 ];
 
 const asyncIter = new Iter8orBase(asyncArray, { async: true });
+console.log(asyncIter.drop(1));
+// console.log(asyncIter.flatMap((value) => [value, value * 2])); // [1, 2, 2, 4, 3, 6]
 (async () => {
-    for await (const item of asyncIter.reverse()) {
-        console.log(item); // [2, 3]
+    for await (const item of asyncIter.drop(1)) {
+        console.log({ item }); // [2, 3]
     }
 })();
 

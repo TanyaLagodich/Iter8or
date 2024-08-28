@@ -42,8 +42,8 @@ const createAsyncDropIterator = (iterable, n) => {
     }
 }
 
-export default function createDropIterator(iterable, predicate) {
+export default function createDropIterator(iterable, n) {
     return typeof iterable[Symbol.asyncIterator] === 'function'
-        ? createAsyncDropIterator(iterable, predicate)
-        : createSyncDropIterator(iterable, predicate);
+        ? createAsyncDropIterator(iterable, n)
+        : createSyncDropIterator(iterable, n);
 }
