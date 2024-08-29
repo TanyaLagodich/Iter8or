@@ -3,6 +3,8 @@ const commonjs = require('@rollup/plugin-commonjs');
 const { babel } = require('@rollup/plugin-babel');
 const terser = require('@rollup/plugin-terser');
 const cleaner = require('rollup-plugin-cleaner');
+const alias = require('@rollup/plugin-alias');
+const path = require('path');
 
 module.exports = {
   input: 'src/index.js',
@@ -34,6 +36,9 @@ module.exports = {
     babel({
       exclude: 'node_modules/**',
       babelHelpers: 'bundled',
+    }),
+    alias({
+      entries: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
     }),
   ],
 };
