@@ -1,83 +1,121 @@
 import { createTakeIterator } from '../index.js';
+import {asyncArray, createAsyncIterator, emptyArray, syncArray} from './__fixtures__/index.js';
 
 describe('createTakeIterator', () => {
-    it('should take only n elements from the iterator', () => {
-        const array = [1, 2, 3];
-        const iterator = createTakeIterator(array, 2);
+    describe('works with sync iterators', () => {
+        it('should take only n elements from the iterator', () => {
+            const takeIterator = createTakeIterator(syncArray, 2);
 
-        expect(iterator.next()).toStrictEqual({ done: false, value: 1 });
-        expect(iterator.next()).toStrictEqual({ done: false, value: 2 });
-        expect(iterator.next()).toStrictEqual({ done: true, value: undefined });
+            expect(takeIterator.next()).toEqual({ done: false, value: 1 });
+            expect(takeIterator.next()).toEqual({ done: false, value: 2 });
+            expect(takeIterator.next()).toEqual({ done: true, value: undefined });
+        });
+
+        it('should work with empty array', () => {
+            const takeIterator = createTakeIterator(emptyArray, 3);
+
+            expect(takeIterator.next()).toEqual({ done: true, value: undefined });
+        });
+
+        it('should return an iterator', () => {
+            const takeIterator = createTakeIterator(syncArray, 3);
+
+            expect(typeof takeIterator[Symbol.iterator]).toBe('function');
+            expect(takeIterator[Symbol.iterator]()).toBe(takeIterator);
+        });
+
+        it('should work with a `string` type of iterator', () => {
+            const string = 'hello';
+            const takeIterator = createTakeIterator(string, 3);
+
+            expect(takeIterator.next().value).toBe('h');
+            expect(takeIterator.next().value).toBe('e');
+            expect(takeIterator.next().value).toBe('l');
+            expect(takeIterator.next().value).toBe(undefined);
+        });
+
+        it('should work with a `Set` type of iterator', () => {
+            const string = new Set('illuminating');
+            const takeIterator = createTakeIterator(string, 3);
+
+            expect(takeIterator.next().value).toBe('i');
+            expect(takeIterator.next().value).toBe('l');
+            expect(takeIterator.next().value).toBe('u');
+            expect(takeIterator.next().value).toBe(undefined);
+        });
+
+        it('should work with a single element', () => {
+            const array = [42];
+            const takeIterator = createTakeIterator(array, 3);
+
+            expect(takeIterator.next()).toEqual({ done: false, value: 42 });
+            expect(takeIterator.next()).toEqual({ done: true, value: undefined });
+        });
+
+        it('should return all elements and then done: true when n is greater than or equal to the iterable\'s length', () => {
+            const takeIterator = createTakeIterator(syncArray, 5);
+
+            expect(takeIterator.next()).toEqual({ done: false, value: 1 });
+            expect(takeIterator.next()).toEqual({ done: false, value: 2 });
+            expect(takeIterator.next()).toEqual({ done: false, value: 3 });
+            expect(takeIterator.next()).toEqual({ done: false, value: 4 });
+            expect(takeIterator.next()).toEqual({ done: false, value: 5 });
+            expect(takeIterator.next()).toEqual({ done: true, value: undefined });
+        });
+
+        it('should handle very large n values without errors', () => {
+            const takeIterator = createTakeIterator(syncArray, Number.MAX_SAFE_INTEGER);
+
+            expect(takeIterator.next()).toEqual({ done: false, value: 1 });
+            expect(takeIterator.next()).toEqual({ done: false, value: 2 });
+            expect(takeIterator.next()).toEqual({ done: false, value: 3 });
+            expect(takeIterator.next()).toEqual({ done: false, value: 4 });
+            expect(takeIterator.next()).toEqual({ done: false, value: 5 });
+            expect(takeIterator.next()).toEqual({ done: true, value: undefined });
+        });
+
+        it('should throw an error, when the method gets a non-iterable argument', () => {
+            const nonIterable = 1;
+            const takeIterator = () => createTakeIterator(nonIterable, 5);
+
+            expect(takeIterator).toThrow(TypeError);
+            expect(takeIterator).toThrow('first argument must be an iterable');
+        });
     });
 
-    it('should work with empty array', () => {
-        const emptyArray = [];
-        const iterator = createTakeIterator(emptyArray, 3);
+    describe('works with async iterators', () => {
+        const asyncIterator = createAsyncIterator(asyncArray);
 
-        expect(iterator.next()).toStrictEqual({ done: true, value: undefined });
-    });
+        it('should take only n elements from the iterator', async () => {
+            const takeIterator = createTakeIterator(asyncIterator, 2);
 
-    it('should return an iterator', () => {
-        const array = [1, 2, 3];
-        const iterator = createTakeIterator(array, 3);
+            expect(await takeIterator.next()).toEqual({ done: false, value: 1 });
+            expect(await takeIterator.next()).toEqual({ done: false, value: 2 });
+            expect(await takeIterator.next()).toEqual({ done: true, value: undefined });
+        });
 
-        expect(typeof iterator[Symbol.iterator]).toBe('function');
-        expect(iterator[Symbol.iterator]()).toBe(iterator);
-    });
+        it('should work with empty array', async () => {
+            const asyncEmptyIterator = createAsyncIterator(emptyArray);
+            const takeIterator = createTakeIterator(asyncEmptyIterator, 3);
 
-    it('should work with a `string` type of iterator', () => {
-        const string = 'hello';
-        const iterator = createTakeIterator(string, 3);
+            expect(await takeIterator.next()).toEqual({ done: true, value: undefined });
+        });
 
-        expect(iterator.next().value).toBe('h');
-        expect(iterator.next().value).toBe('e');
-        expect(iterator.next().value).toBe('l');
-        expect(iterator.next().value).toBe(undefined);
-    });
+        it('should return an iterator', () => {
+            const takeIterator = createTakeIterator(asyncIterator, 3);
 
-    it('should work with a `Set` type of iterator', () => {
-        const string = new Set('illuminating');
-        const iterator = createTakeIterator(string, 3);
+            expect(typeof takeIterator[Symbol.asyncIterator]).toBe('function');
+            expect(takeIterator[Symbol.asyncIterator]()).toBe(takeIterator);
+        });
 
-        expect(iterator.next().value).toBe('i');
-        expect(iterator.next().value).toBe('l');
-        expect(iterator.next().value).toBe('u');
-        expect(iterator.next().value).toBe(undefined);
-    });
+        it('should return all elements and then done: true when n is greater than or equal to the iterable\'s length', async () => {
+            const takeIterator = createTakeIterator(asyncIterator, 5);
 
-    it('should work with a single element', () => {
-        const array = [42];
-        const iterator = createTakeIterator(array, 3);
+            expect(await takeIterator.next()).toEqual({ done: false, value: 1 });
+            expect(await takeIterator.next()).toEqual({ done: false, value: 2 });
+            expect(await takeIterator.next()).toEqual({ done: false, value: 3 });
+            expect(await takeIterator.next()).toEqual({ done: true, value: undefined });
+        });
 
-        expect(iterator.next()).toStrictEqual({ done: false, value: 42 });
-        expect(iterator.next()).toStrictEqual({ done: true, value: undefined });
-    });
-
-    it('should return all elements and then done: true when n is greater than or equal to the iterable\'s length', () => {
-        const array = [1, 2, 3];
-        const iterator = createTakeIterator(array, 5);
-
-        expect(iterator.next()).toStrictEqual({ done: false, value: 1 });
-        expect(iterator.next()).toStrictEqual({ done: false, value: 2 });
-        expect(iterator.next()).toStrictEqual({ done: false, value: 3 });
-        expect(iterator.next()).toStrictEqual({ done: true, value: undefined });
-    });
-
-    it('should handle very large n values without errors', () => {
-        const array = [1, 2, 3];
-        const iterator = createTakeIterator(array, Number.MAX_SAFE_INTEGER);
-
-        expect(iterator.next()).toStrictEqual({ done: false, value: 1 });
-        expect(iterator.next()).toStrictEqual({ done: false, value: 2 });
-        expect(iterator.next()).toStrictEqual({ done: false, value: 3 });
-        expect(iterator.next()).toStrictEqual({ done: true, value: undefined });
-    });
-
-    it('should throw an error, when the method gets a non-iterable argument', () => {
-        const nonIterable = 1;
-        const iterator = () => createTakeIterator(nonIterable, 5);
-
-        expect(iterator).toThrow(TypeError);
-        expect(iterator).toThrow('first argument must be an iterable');
     });
 });
