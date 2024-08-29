@@ -155,22 +155,3 @@ export default class Iter8orBase {
     return sum(this.iterable, fn);
   }
 }
-
-// const array = [1, 2, 3, 4, 5];
-// const iter = new Iter8orBase(array);
-
-//
-// const asyncArray = [
-//     () => Promise.resolve(1),
-//     () => new Promise(resolve => setTimeout(() => resolve(2), 1000)),
-//     () => Promise.resolve(3)
-// ];
-//
-// const asyncIter = new Iter8orBase(asyncArray, { async: true });
-// console.log(asyncIter.drop(1));
-// // console.log(asyncIter.flatMap((value) => [value, value * 2])); // [1, 2, 2, 4, 3, 6]
-// (async () => {
-//     for await (const item of asyncIter.drop(1)) {
-//         console.log({ item }); // [2, 3]
-//     }
-// })();
