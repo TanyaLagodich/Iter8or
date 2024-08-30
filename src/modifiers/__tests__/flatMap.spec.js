@@ -1,12 +1,17 @@
 import { createFlatMapIterator } from '../index.js';
-import {asyncArray, createAsyncIterator, syncArray} from './__fixtures__/index.js';
+import {
+  asyncArray,
+  createAsyncIterator,
+  syncArray,
+} from './__fixtures__/index.js';
 
 describe('createFlatMapIterator', () => {
-  const fn = (item) => [item, item * 2];
-
   describe('works with sync iterators', () => {
     it('should flatten and map each element of the iterable', () => {
-      const iterator = createFlatMapIterator(syncArray, fn);
+      const iterator = createFlatMapIterator(syncArray, (item) => [
+        item,
+        item * 2,
+      ]);
 
       expect(iterator.next()).toEqual({ done: false, value: 1 });
       expect(iterator.next()).toEqual({ done: false, value: 2 });
@@ -92,7 +97,10 @@ describe('createFlatMapIterator', () => {
     const asyncIterator = createAsyncIterator(asyncArray);
 
     it('should flatten and map each element of the iterable', async () => {
-      const iterator = createFlatMapIterator(asyncIterator, fn);
+      const iterator = createFlatMapIterator(asyncIterator, (item) => [
+        item,
+        item * 2,
+      ]);
 
       expect(await iterator.next()).toEqual({ done: false, value: 1 });
       expect(await iterator.next()).toEqual({ done: false, value: 2 });
@@ -119,7 +127,9 @@ describe('createFlatMapIterator', () => {
     });
 
     it('should handle nested iterables', async () => {
-      const iterator = createFlatMapIterator(asyncIterator, (x) => [[x, x * 2]]);
+      const iterator = createFlatMapIterator(asyncIterator, (x) => [
+        [x, x * 2],
+      ]);
 
       expect(await iterator.next()).toEqual({ done: false, value: [1, 2] });
       expect(await iterator.next()).toEqual({ done: false, value: [2, 4] });
@@ -133,6 +143,5 @@ describe('createFlatMapIterator', () => {
       expect(typeof iterator[Symbol.asyncIterator]).toBe('function');
       expect(iterator[Symbol.asyncIterator]()).toBe(iterator);
     });
-
   });
 });

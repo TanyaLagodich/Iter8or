@@ -78,6 +78,6 @@ export default function createFlatMapIterator(iterable, fn) {
   }
 
   return typeof iterable[Symbol.asyncIterator] === 'function'
-      ? createAsyncFlatMapIterator(iterable, fn)
-      : createSyncFlatMapIterator(iterable, fn);
+    ? createAsyncFlatMapIterator(iterable, fn)
+    : createSyncFlatMapIterator(iterable, fn);
 }
