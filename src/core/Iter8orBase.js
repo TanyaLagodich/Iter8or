@@ -2,9 +2,11 @@ import {
   createMapIterator,
   createFilterIterator,
   createDropIterator,
+  createConcatIterator,
   createFlatMapIterator,
   createReverseIterator,
   createTakeIterator,
+  createFlattenIterator,
 } from '../modifiers/index.js';
 import { avg, max, min, reduce, sum } from '../aggregators/index.js';
 import { DigitsIterable } from './DigitsIterable.js';
@@ -77,34 +79,6 @@ export default class Iter8orBase {
     }
   }
 
-  // convertArrayToAsyncIterable(array) {
-  //     const self = this;
-  //     return {
-  //         [Symbol.asyncIterator]() {
-  //             let index = 0;
-  //
-  //             return {
-  //                 async next() {
-  //                     if (index < array.length) {
-  //                         const value = await self.resolveItem(array[index]);
-  //                         index++;
-  //                         return { value, done: false };
-  //                     } else {
-  //                         return { value: undefined, done: true };
-  //                     }
-  //                 }
-  //             };
-  //         }
-  //     };
-  // }
-  //
-  // async resolveItem(item) {
-  //     if (typeof item === 'function') {
-  //         return await item();
-  //     }
-  //     return await item;
-  // }
-
   map(fn) {
     return new Iter8orBase(createMapIterator(this.iterable, fn), this.options);
   }
@@ -127,12 +101,20 @@ export default class Iter8orBase {
     );
   }
 
+  flatten() {
+    return new Iter8orBase(createFlattenIterator(this.iterable), this.options);
+  }
+
   reverse() {
     return new Iter8orBase(createReverseIterator(this.iterable), this.options);
   }
 
   take(n) {
     return new Iter8orBase(createTakeIterator(this.iterable, n), this.options);
+  }
+
+  concat(...iterators) {
+    return new Iter8orBase(createConcatIterator(this.iterable, iterators), this.options);
   }
 
   avg(fn) {
@@ -155,3 +137,31 @@ export default class Iter8orBase {
     return sum(this.iterable, fn);
   }
 }
+
+const iterator1 = new Iter8orBase([1, 2, 3]);
+const iterator2 = new Iter8orBase([4, 5, 6]);
+const iterator3 = new Iter8orBase([7, 8, 9]);
+
+// const concated = iterator1.concat(iterator2, iterator3);
+// console.log(concated.flatMap(i => [i, i * 2]));
+// console.log([...iterator1.flatMap(i => [i, i * 2])])
+
+// for (const item of iterator1.flatMap(i => [i, i * 2])) {
+//   console.log(item);
+// }
+
+const asyncIterator = new Iter8orBase([
+  async () => 1,
+  async () => 2,
+  async () => 3,
+], { async: true });
+
+async function forOf(asyncIterator) {
+  for await (const value of asyncIterator.flatMap(i => [i, i * 2])) {
+    console.log(value);
+  }
+}
+
+await forOf(asyncIterator);
+
+

@@ -1,27 +1,29 @@
 const createSyncFlatMapIterator = (iterable, fn) => {
-  if (!iterable[Symbol.iterator]) {
-    throw new TypeError('first argument must be an iterable');
-  }
-
-  if (typeof fn !== 'function') {
-    throw new TypeError('second argument must be a function');
-  }
-
-  const outerIterator = iterable[Symbol.iterator]();
+  const iterator = iterable[Symbol.iterator]();
   let innerIterator = null;
 
   return {
     next() {
       while (true) {
         if (innerIterator) {
-          const { value, done } = innerIterator.next();
-          if (!done) return { value, done: false };
+          const innerResult = innerIterator.next();
+          if (!innerResult.done) {
+            return { done: false, value: innerResult.value };
+          }
           innerIterator = null;
         }
 
-        const { value, done } = outerIterator.next();
-        if (done) return { done: true, value: undefined };
-        innerIterator = fn(value)[Symbol.iterator]();
+        const outerResult = iterator.next();
+        if (outerResult.done) {
+          return { done: true, value: undefined };
+        }
+
+        const mapped = fn(outerResult.value);
+        if (mapped && typeof mapped[Symbol.iterator] === 'function') {
+          innerIterator = mapped[Symbol.iterator]();
+        } else {
+          return { done: false, value: mapped };
+        }
       }
     },
     [Symbol.iterator]() {
@@ -31,40 +33,32 @@ const createSyncFlatMapIterator = (iterable, fn) => {
 };
 
 const createAsyncFlatMapIterator = (iterable, fn) => {
-  if (!iterable[Symbol.asyncIterator]) {
-    throw new TypeError('first argument must be an iterable');
-  }
-
-  if (typeof fn !== 'function') {
-    throw new TypeError('second argument must be a function');
-  }
-
-  const outerIterator = iterable[Symbol.asyncIterator]();
+  const iterator = iterable[Symbol.asyncIterator]();
   let innerIterator = null;
 
   return {
     async next() {
       while (true) {
         if (innerIterator) {
-          const { value, done } = await innerIterator.next();
-          if (!done) return { value, done: false };
+          const innerResult = await innerIterator.next();
+          if (!innerResult.done) {
+            return { done: false, value: innerResult.value };
+          }
           innerIterator = null;
         }
 
-        const { value, done } = await outerIterator.next();
-        if (done) return { done: true, value: undefined };
+        const outerResult = await iterator.next();
+        if (outerResult.done) {
+          return { done: true, value: undefined };
+        }
 
-        // console.log({ value })
-        const innerIterable = await fn(value);
-        // console.log({ innerIterable })
-        if (innerIterable[Symbol.asyncIterator]) {
-          innerIterator = innerIterable[Symbol.asyncIterator]();
-        } else if (innerIterable[Symbol.iterator]) {
-          innerIterator = innerIterable[Symbol.iterator]();
+        const mapped = await fn(outerResult.value);
+        if (mapped && typeof mapped[Symbol.asyncIterator] === 'function') {
+          innerIterator = mapped[Symbol.asyncIterator]();
+        } else if (mapped && typeof mapped[Symbol.iterator] === 'function') {
+          innerIterator = mapped[Symbol.iterator]();
         } else {
-          throw new TypeError(
-            'Function must return an iterable or async iterable'
-          );
+          return { done: false, value: mapped };
         }
       }
     },
@@ -75,7 +69,15 @@ const createAsyncFlatMapIterator = (iterable, fn) => {
 };
 
 export default function createFlatMapIterator(iterable, fn) {
+  if (!iterable[Symbol.iterator] && !iterable[Symbol.asyncIterator]) {
+    throw new TypeError('first argument must be an iterable');
+  }
+
+  if (typeof fn !== 'function') {
+    throw new TypeError('second argument must be a function');
+  }
+
   return typeof iterable[Symbol.asyncIterator] === 'function'
-    ? createAsyncFlatMapIterator(iterable, fn)
-    : createSyncFlatMapIterator(iterable, fn);
+      ? createAsyncFlatMapIterator(iterable, fn)
+      : createSyncFlatMapIterator(iterable, fn);
 }
