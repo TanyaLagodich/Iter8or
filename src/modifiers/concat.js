@@ -1,12 +1,5 @@
-const createSyncConcatIterator = (iterables) => {
-  const iterators = iterables.map((iterable) => {
-    if (!iterable[Symbol.iterator]) {
-      throw new TypeError('All arguments must be iterable');
-    }
-    return iterable[Symbol.iterator]();
-  });
-
-  let currentIteratorIndex = 0;
+const createSyncConcatIterator = (iterators) => {
+    let currentIteratorIndex = 0;
 
   return {
     next() {
@@ -25,26 +18,22 @@ const createSyncConcatIterator = (iterables) => {
   };
 };
 
-const createAsyncConcatIterator = (iterables) => {
-  const iterators = iterables.map((iterable) => {
-    if (!iterable[Symbol.asyncIterator]) {
-      throw new TypeError('All arguments must be iterable');
-    }
-    return iterable[Symbol.asyncIterator]();
-  });
-
+const createAsyncConcatIterator = (iterators) => {
   let currentIteratorIndex = 0;
-
   return {
     async next() {
-      while (currentIteratorIndex < iterators.length) {
-        const result = await iterators[currentIteratorIndex].next();
-        if (!result.done) {
-          return result;
+        while (currentIteratorIndex < iterators.length) {
+            const iterator = iterators[currentIteratorIndex];
+            console.log({ iterator });
+
+            const result = await iterator.next();
+
+            if (!result.done) {
+                return result;
+            }
+            currentIteratorIndex++;
         }
-        currentIteratorIndex++;
-      }
-      return { done: true, value: undefined };
+        return { done: true, value: undefined };
     },
     [Symbol.asyncIterator]() {
       return this;
@@ -53,7 +42,14 @@ const createAsyncConcatIterator = (iterables) => {
 };
 
 export default function createConcatIterator(...iterables) {
-  return typeof iterables[0][Symbol.asyncIterator] === 'function'
-    ? createAsyncConcatIterator(iterables)
-    : createSyncConcatIterator(iterables);
+    const iterators = iterables.map((iterable) => {
+        if (!iterable[Symbol.iterator] && !iterable[Symbol.asyncIterator]) {
+            throw new TypeError('All arguments must be iterable');
+        }
+        return iterable[Symbol.asyncIterator] ? iterable[Symbol.asyncIterator]() : iterable[Symbol.iterator]();
+    });
+
+  return iterators.some((iterator) => typeof iterator[Symbol.asyncIterator] === 'function')
+    ? createAsyncConcatIterator(iterators)
+    : createSyncConcatIterator(iterators);
 }

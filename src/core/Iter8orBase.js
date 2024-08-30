@@ -117,10 +117,10 @@ export default class Iter8orBase {
   }
 
   concat(...iterators) {
-    return new Iter8orBase(
-      createConcatIterator(this.iterable, iterators),
-      this.options
-    );
+    if (!iterators.some(iterator => iterator instanceof Iter8orBase)) {
+      throw new Error('All concatted iterators must be an Iter8orBase.');
+    }
+    return new Iter8orBase(createConcatIterator(this.iterable, iterators), this.options);
   }
 
   avg(fn) {
@@ -149,8 +149,9 @@ const iterator2 = new Iter8orBase([4, 5, 6]);
 const iterator3 = new Iter8orBase([7, 8, 9]);
 
 // console.log([...iterator1.flat(Infinity)])
-
+//
 // const concated = iterator1.concat(iterator2, iterator3);
+// console.log([...concated.flat(Infinity)]);
 // console.log(concated.flatMap(i => [i, i * 2]));
 // console.log([...iterator1.flatMap(i => [i, i * 2])])
 
@@ -158,19 +159,28 @@ const iterator3 = new Iter8orBase([7, 8, 9]);
 //   console.log(item);
 // }
 
-const asyncIterator = new Iter8orBase(
+const asyncIterator1 = new Iter8orBase(
   [
     async () => 1,
     [async () => 2, async () => 3],
-    [async () => 4, [async () => 5, async () => 6]],
   ],
   { async: true }
 );
 
-async function forOf(asyncIterator) {
-  for await (const value of asyncIterator.flat(1)) {
-    console.log(value);
+const asyncIterator2 = new Iter8orBase(
+    [
+      async () => 7,
+      [async () => 8, async () => 9],
+    ],
+    { async: true }
+);
+
+async function forOf() {
+  for await (const value of asyncIterator1.concat(asyncIterator2)) {
+    // console.log(value);
   }
 }
 
-await forOf(asyncIterator);
+// await forOf();
+
+console.log(asyncIterator1.concat(asyncIterator2));
