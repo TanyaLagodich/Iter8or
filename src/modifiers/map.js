@@ -46,6 +46,19 @@ const createAsyncMapIterator = (iterable, fn) => {
   };
 };
 
+/**
+ * Создает итератор, который применяет функцию ко всем элементам входного итератора.
+ * @function
+ * @param {Iterable|AsyncIterable} iterable - Исходный итератор.
+ * @param {Function} fn - Функция, применяемая к каждому элементу итератора.
+ * @returns {Object} Итератор, который возвращает элементы, полученные применением функции `fn`.
+ * @throws {TypeError} Если первый аргумент не является итератором, или второй аргумент не является функцией.
+ * @example
+ * // Пример использования через класс Iter8or:
+ * const iter = new Iter8or([1, 2, 3]);
+ * const mapped = iter.map(x => x * 2);
+ * console.log([...mapped]); // [2, 4, 6]
+ */
 export default function createMapIterator(iterable, fn) {
   return typeof iterable[Symbol.asyncIterator] === 'function'
     ? createAsyncMapIterator(iterable, fn)

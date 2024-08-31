@@ -1,5 +1,5 @@
 const createSyncConcatIterator = (iterators) => {
-    let currentIteratorIndex = 0;
+  let currentIteratorIndex = 0;
 
   return {
     next() {
@@ -22,18 +22,17 @@ const createAsyncConcatIterator = (iterators) => {
   let currentIteratorIndex = 0;
   return {
     async next() {
-        while (currentIteratorIndex < iterators.length) {
-            const iterator = iterators[currentIteratorIndex];
-            console.log({ iterator });
+      while (currentIteratorIndex < iterators.length) {
+        const iterator = iterators[currentIteratorIndex];
 
-            const result = await iterator.next();
+        const result = await iterator.next();
 
-            if (!result.done) {
-                return result;
-            }
-            currentIteratorIndex++;
+        if (!result.done) {
+          return result;
         }
-        return { done: true, value: undefined };
+        currentIteratorIndex++;
+      }
+      return { done: true, value: undefined };
     },
     [Symbol.asyncIterator]() {
       return this;
@@ -42,14 +41,18 @@ const createAsyncConcatIterator = (iterators) => {
 };
 
 export default function createConcatIterator(...iterables) {
-    const iterators = iterables.map((iterable) => {
-        if (!iterable[Symbol.iterator] && !iterable[Symbol.asyncIterator]) {
-            throw new TypeError('All arguments must be iterable');
-        }
-        return iterable[Symbol.asyncIterator] ? iterable[Symbol.asyncIterator]() : iterable[Symbol.iterator]();
-    });
+  const iterators = iterables.map((iterable) => {
+    if (!iterable[Symbol.iterator] && !iterable[Symbol.asyncIterator]) {
+      throw new TypeError('All arguments must be iterable');
+    }
+    return iterable[Symbol.asyncIterator]
+      ? iterable[Symbol.asyncIterator]()
+      : iterable[Symbol.iterator]();
+  });
 
-  return iterators.some((iterator) => typeof iterator[Symbol.asyncIterator] === 'function')
+  return iterators.some(
+    (iterator) => typeof iterator[Symbol.asyncIterator] === 'function'
+  )
     ? createAsyncConcatIterator(iterators)
     : createSyncConcatIterator(iterators);
 }
