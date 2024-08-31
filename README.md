@@ -45,4 +45,4 @@ for (const [key, value] of objIter) {
 // b 2
 ```
 
-[🔍 Подробнее о классе Iter8or](./Iter8or.html)
+[🔍 Подробнее о классе Iter8or](https://tanyalagodich.github.io/Iter8or/Iter8or.html)
