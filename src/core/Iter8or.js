@@ -341,30 +341,111 @@ export default class Iter8or {
     return sum(this.iterable, fn);
   }
 
+  /**
+   * Группирует элементы итератора по ключам, определенным функцией группировщиком.
+   * @method groupBy
+   * @memberof Iter8or
+   * @instance
+   * @param {Function} grouper - Функция, которая принимает элемент и возвращает ключ группы.
+   * @returns {Object} Объект, где ключи — это значения, возвращенные функцией группировщиком, а значения — массивы элементов, соответствующие этим ключам.
+   * @example
+   * const iter = new Iter8or(['apple', 'banana', 'cherry']);
+   * const grouped = iter.groupBy(word => word.length);
+   * console.log(grouped); // { 5: ['apple'], 6: ['banana', 'cherry'] }
+   */
   groupBy(grouper) {
     return groupBy(this.iterable, grouper);
   }
 
+  /**
+   * Разделяет элементы итератора на две группы на основе предикатной функции.
+   * @method partition
+   * @memberof Iter8or
+   * @instance
+   * @param {Function} predicate - Функция, которая возвращает true или false для каждого элемента.
+   * @returns {Array} Массив из двух массивов: [массив элементов, для которых предикат вернул true, массив элементов, для которых предикат вернул false].
+   * @example
+   * const iter = new Iter8or([1, 2, 3, 4, 5]);
+   * const [evens, odds] = iter.partition(x => x % 2 === 0);
+   * console.log(evens); // [2, 4]
+   * console.log(odds);  // [1, 3, 5]
+   */
   partition(predicate) {
     return partition(this.iterable, predicate);
   }
-
+  /**
+   * Собирает элементы итератора в массив.
+   * @method toArray
+   * @memberof Iter8or
+   * @instance
+   * @returns {Array} Массив, содержащий все элементы итератора.
+   * @example
+   * const iter = new Iter8or(new Set([1, 2, 3]));
+   * const array = iter.toArray();
+   * console.log(array); // [1, 2, 3]
+   */
   toArray() {
     return toArray(this.iterable);
   }
 
+  /**
+   * Собирает элементы итератора в Map.
+   * Элементы должны быть парами [ключ, значение].
+   * @method toMap
+   * @memberof Iter8or
+   * @instance
+   * @returns {Map} Map, содержащий все пары [ключ, значение] из итератора.
+   * @example
+   * const iter = new Iter8or([['a', 1], ['b', 2], ['c', 3]]);
+   * const map = iter.toMap();
+   * console.log(map); // Map { 'a' => 1, 'b' => 2, 'c' => 3 }
+   */
   toMap() {
     return toMap(this.iterable);
   }
 
+  /**
+   * Собирает элементы итератора в объект.
+   * Элементы должны быть парами [ключ, значение].
+   * @method toObject
+   * @memberof Iter8or
+   * @instance
+   * @returns {Object} Объект, содержащий все пары [ключ, значение] из итератора.
+   * @example
+   * const iter = new Iter8or([['a', 1], ['b', 2], ['c', 3]]);
+   * const obj = iter.toObject();
+   * console.log(obj); // { a: 1, b: 2, c: 3 }
+   */
   toObject() {
     return toObject(this.iterable);
   }
 
+  /**
+   * Собирает элементы итератора в Set.
+   * @method toSet
+   * @memberof Iter8or
+   * @instance
+   * @returns {Set} Set, содержащий все уникальные элементы итератора.
+   * @example
+   * const iter = new Iter8or([1, 2, 2, 3, 4]);
+   * const set = iter.toSet();
+   * console.log(set); // Set { 1, 2, 3, 4 }
+   */
   toSet() {
     return toSet(this.iterable)
   }
 
+  /**
+   * Конкатенирует элементы итератора в строку.
+   * @method toString
+   * @memberof Iter8or
+   * @instance
+   * @returns {string} Строка, содержащая все элементы итератора, конкатенированные вместе.
+   * @example
+   * const iter = new Iter8or(['H', 'e', 'l', 'l', 'o']);
+   * const str = iter.toString();
+   * console.log(str); // 'Hello'
+   */
   toString() {
     return toString(this.iterable);
   }

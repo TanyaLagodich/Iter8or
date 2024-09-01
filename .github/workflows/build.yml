@@ -37,8 +37,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Generate documentation
-        run: npm run generate-docs
+      - name: Generate English Documentation
+        run: npm run generate-docs-en
+
+      - name: Generate Russian Documentation
+        run: npm run generate-docs-ru
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

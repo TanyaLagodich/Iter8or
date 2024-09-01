@@ -1,0 +1,30 @@
+{
+  "source": {
+    "include": ["src"],
+    "includePattern": ".+\\.js$",
+    "excludePattern": "(^|\\/|\\\\)node_modules"
+  },
+  "opts": {
+    "destination": "./docs/ru",
+    "recurse": true,
+    "readme": "./README.ru.md",
+    "template": "node_modules/clean-jsdoc-theme",
+    "theme_opts": {
+      "title": "Документация Iter8or (Русский)",
+      "includeFilesListInHomepage": true,
+      "search": true,
+      "menu": [
+        {
+          "title": "Github",
+          "id": "github",
+          "link": "https://github.com/TanyaLagodich/Iter8or"
+        },
+        {
+          "title": "English Version",
+          "id": "en",
+          "link": "/en/index.html"
+        }
+      ]
+    }
+  }
+}

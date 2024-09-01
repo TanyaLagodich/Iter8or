@@ -7,7 +7,8 @@
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint . --fix",
-    "generate-docs": "jsdoc --configure jsdoc.json --verbose",
+    "generate-docs-en": "jsdoc --configure jsdoc-en.json --verbose",
+    "generate-docs-ru": "jsdoc --configure jsdoc-ru.json --verbose",
     "test": "jest"
   },
   "keywords": [],
