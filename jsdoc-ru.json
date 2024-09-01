@@ -1,7 +1,7 @@
 {
   "source": {
     "include": ["src"],
-    "includePattern": ".+\\.js$",
+    "includePattern": "core/docs/iter8or.ru.jsdoc.js",
     "excludePattern": "(^|\\/|\\\\)node_modules"
   },
   "opts": {
@@ -18,6 +18,11 @@
           "title": "Github",
           "id": "github",
           "link": "https://github.com/TanyaLagodich/Iter8or"
+        },
+        {
+          "title": "NPM",
+          "id": "npm",
+          "link": "https://www.npmjs.com/package/iter8or"
         },
         {
           "title": "English Version",

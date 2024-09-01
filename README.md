@@ -9,10 +9,13 @@ Iter8or is a versatile library for working with iterators and asynchronous itera
 
 - **Support for both synchronous and asynchronous iterators**: Process both synchronous and asynchronous data using a single API.
 - **Creation of iterators from non-iterable objects:**:
-  - For numbers (`number`): By default, it creates an iterator that iterates from 1 to the specified number (range).
-  - `digits` option: If the `{ digits: true }` option is passed, the number is split into individual digits, creating an iterator over the digits of the number.
-  - For objects (`object`): An iterator is created that iterates over the keys and values of the object.
+  - For numbers (`number`):
+    - **By default**, an iterator is created that iterates from _1_ (or _-1_ if the number is negative) to the specified number inclusively (range).
+    - **The digits option**: If the `{ digits: true }` option is provided, the number is split into individual digits, creating an iterator over the digits of the number. This supports both regular numbers and `BigInt`.
+    - If a range iterator is used, the allowed range is _from -1e7 to 1e7_. This limitation is in place to prevent excessive memory and resource usage.
+  - **For objects (`object`)**: An iterator is created that iterates over the keys and values of the object.
 - **Powerful data processing methods**: Built-in methods for filtering, mapping, grouping, splitting, combining, and other data operations.
+- **Support for ES Modules and CommonJS**: The library can be used with both modern ES modules and traditional CommonJS modules.
 
 ## Installation
 
@@ -72,7 +75,24 @@ for await (const value of asyncIter) {
 // 'cherry'
 ```
 
-Numbers (`number`) are always processed as **_synchronous_** iterators, regardless of whether the `{ async: true }` option is passed or not.
+## Important Notes on Numbers
+- **The `digits: true` option**: Allows iterating over individual digits of a number, supporting both regular numbers and `BigInt`.
+- Numbers (`number`) are always processed as **_synchronous_** iterators, regardless of whether the `{ async: true }` option is passed.
+
+### Iteration Over Ranges (RangeIterable):
+Range iterators (`range`) are limited to numbers **_from -1e7 to 1e7_**. This limitation is in place to prevent excessive memory and resource usage. If you try to create a range beyond these values, the library will throw a _RangeError_.
+
+### Example with RangeIterable:
+```javascript
+const rangeIter = new Iter8or(5);
+console.log([...rangeIter]); // [1, 2, 3, 4, 5]
+```
+
+### Example with BigInt and the digits: true Option:
+```javascript
+const bigIntIter = new Iter8or(12345678901234567890n, { digits: true });
+console.log([...bigIntIter]); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+```
 
 [🔍 Learn more about each method of the Iter8or class](https://tanyalagodich.github.io/Iter8or/Iter8or.html)
 
