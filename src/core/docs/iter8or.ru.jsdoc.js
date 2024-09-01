@@ -11,18 +11,13 @@
  */
 
 /**
- * Метод синхронного итератора.
- * @method
+ * Возвращает следующее значение итератора
+ * @method next
  * @memberof Iter8or
- * @instance
- * @returns {Iterator} Итератор по умолчанию для итерируемого объекта.
- * @throws {TypeError} Выбрасывает исключение, если итератор является асинхронным.
- */
-
-/**
- * Метод асинхронного итератора.
- * @returns {AsyncIterator} Итератор по умолчанию для асинхронного итерируемого объекта.
- * @throws {TypeError} Выбрасывает исключение, если итератор является синхронным.
+ * @returns {IteratorResult} Следующее значение итератора
+ * @example
+ * const iter = new Iter8or([1, 2, 3]);
+ * console.log(iter.next().value); // Output: 1
  */
 
 /**
@@ -40,7 +35,7 @@
 
 /**
  * Фильтрует элементы итератора, используя предоставленную функцию предикат.
- * @method
+ * @method filter
  * @memberof Iter8or
  * @instance
  * @param {Function} predicate - Функция фильтрации.
@@ -53,7 +48,7 @@
 
 /**
  * Пропускает первые `n` элементов из итератора.
- * @method
+ * @method drop
  * @memberof Iter8or
  * @instance
  * @param {number} n - Количество элементов для пропуска.
@@ -66,7 +61,7 @@
 
 /**
  * Применяет функцию ко всем элементам итератора и разворачивает результаты в один уровень.
- * @method
+ * @method flatMap
  * @memberof Iter8or
  * @instance
  * @param {Function} fn - Функция для применения и разворачивания итератора.
@@ -79,7 +74,7 @@
 
 /**
  * Разворачивает элементы итератора до указанной глубины.
- * @method
+ * @method flat
  * @memberof Iter8or
  * @instance
  * @param {number} depth - Глубина развёртки итератора.
@@ -92,7 +87,7 @@
 
 /**
  * Переворачивает порядок элементов в итераторе.
- * @method
+ * @method reverse
  * @memberof Iter8or
  * @instance
  * @returns {Iter8or} Новый экземпляр с перевёрнутым итератором.
@@ -104,7 +99,7 @@
 
 /**
  * Берёт первые `n` элементов из итератора.
- * @method
+ * @method take
  * @memberof Iter8or
  * @instance
  * @param {number} n - Количество элементов для взятия.
@@ -117,7 +112,7 @@
 
 /**
  * Конкатенирует текущий итератор с другими экземплярами Iter8or.
- * @method
+ * @method concat
  * @memberof Iter8or
  * @instance
  * @param {...Iter8or} iterators - Итераторы для конкатенации.
@@ -132,7 +127,7 @@
 
 /**
  * Вычисляет среднее значение элементов итератора.
- * @method
+ * @method avg
  * @memberof Iter8or
  * @instance
  * @param {Function} [fn] - Дополнительная функция маппинга перед вычислением среднего.
@@ -145,7 +140,7 @@
 
 /**
  * Находит максимальное значение в итераторе.
- * @method
+ * @method max
  * @memberof Iter8or
  * @instance
  * @param {Function} [fn] - Дополнительная функция маппинга перед поиском максимального значения.
@@ -158,7 +153,7 @@
 
 /**
  * Находит минимальное значение в итераторе.
- * @method
+ * @method min
  * @memberof Iter8or
  * @instance
  * @param {Function} [fn] - Дополнительная функция маппинга перед поиском минимального значения.
@@ -171,7 +166,7 @@
 
 /**
  * Сворачивает элементы итератора, используя предоставленную функцию редукции.
- * @method
+ * @method reduce
  * @memberof Iter8or
  * @instance
  * @param {Function} reducer - Функция редукции.
@@ -185,7 +180,7 @@
 
 /**
  * Суммирует элементы итератора.
- * @method
+ * @method sum
  * @memberof Iter8or
  * @instance
  * @param {Function} [fn] - Дополнительная функция маппинга перед суммированием.

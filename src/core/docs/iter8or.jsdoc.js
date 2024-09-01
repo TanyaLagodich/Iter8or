@@ -10,19 +10,15 @@
  * @throws {TypeError} If `iterable` is null, undefined, boolean, or function.
  */
 
-/**
- * Synchronous iterator method.
- * @method
- * @memberof Iter8or
- * @instance
- * @returns {Iterator} The default iterator for the iterable.
- * @throws {TypeError} Throws if the iterable is asynchronous.
- */
 
 /**
- * Asynchronous iterator method.
- * @returns {AsyncIterator} The default async iterator for the iterable.
- * @throws {TypeError} Throws if the iterable is synchronous.
+ * Returns the next value in the iteration.
+ * @method next
+ * @memberof Iter8or
+ * @returns {IteratorResult} The next value of the iterator.
+ * @example
+ * const iter = new Iter8or([1, 2, 3]);
+ * console.log(iter.next().value); // Output: 1
  */
 
 /**
@@ -40,7 +36,7 @@
 
 /**
  * Filters the iterable using the provided predicate function.
- * @method
+ * @method filter
  * @memberof Iter8or
  * @instance
  * @param {Function} predicate - The filtering function.
@@ -53,7 +49,7 @@
 
 /**
  * Drops the first `n` elements from the iterable.
- * @method
+ * @method drop
  * @memberof Iter8or
  * @instance
  * @param {number} n - The number of elements to drop.
@@ -66,7 +62,7 @@
 
 /**
  * Maps and flattens the iterable using the provided function.
- * @method
+ * @method flatMap
  * @memberof Iter8or
  * @instance
  * @param {Function} fn - The function to map and flatten the iterable.
@@ -79,7 +75,7 @@
 
 /**
  * Flattens the iterable up to the specified depth.
- * @method
+ * @method flat
  * @memberof Iter8or
  * @instance
  * @param {number} depth - The depth to flatten the iterable.
@@ -92,7 +88,7 @@
 
 /**
  * Reverses the order of the elements in the iterable.
- * @method
+ * @method reverse
  * @memberof Iter8or
  * @instance
  * @returns {Iter8or} A new instance with the reversed iterable.
@@ -104,7 +100,7 @@
 
 /**
  * Takes the first `n` elements from the iterable.
- * @method
+ * @method take
  * @memberof Iter8or
  * @instance
  * @param {number} n - The number of elements to take.
@@ -117,7 +113,7 @@
 
 /**
  * Concatenates the current iterable with other Iter8or instances.
- * @method
+ * @method concat
  * @memberof Iter8or
  * @instance
  * @param {...Iter8or} iterators - The iterators to concatenate.
@@ -132,7 +128,7 @@
 
 /**
  * Calculates the average of the elements in the iterable.
- * @method
+ * @method avg
  * @memberof Iter8or
  * @instance
  * @param {Function} [fn] - Optional mapping function to apply before averaging.
@@ -145,7 +141,7 @@
 
 /**
  * Finds the maximum value in the iterable.
- * @method
+ * @method max
  * @memberof Iter8or
  * @instance
  * @param {Function} [fn] - Optional mapping function to apply before finding the maximum.
@@ -158,7 +154,7 @@
 
 /**
  * Finds the minimum value in the iterable.
- * @method
+ * @method min
  * @memberof Iter8or
  * @instance
  * @param {Function} [fn] - Optional mapping function to apply before finding the minimum.
@@ -171,7 +167,7 @@
 
 /**
  * Reduces the iterable using the provided reducer function.
- * @method
+ * @method reduce
  * @memberof Iter8or
  * @instance
  * @param {Function} reducer - The reducer function.
@@ -185,7 +181,7 @@
 
 /**
  * Sums the elements in the iterable.
- * @method
+ * @method sum
  * @memberof Iter8or
  * @instance
  * @param {Function} [fn] - Optional mapping function to apply before summing.

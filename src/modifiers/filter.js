@@ -51,6 +51,7 @@ const createAsyncFilterIterator = (iterable, predicate) => {
 };
 
 export default function createFilterIterator(iterable, predicate) {
+  console.log(typeof iterable[Symbol.asyncIterator] === 'function')
   return typeof iterable[Symbol.asyncIterator] === 'function'
     ? createAsyncFilterIterator(iterable, predicate)
     : createSyncFilterIterator(iterable, predicate);
