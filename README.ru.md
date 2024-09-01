@@ -1,4 +1,5 @@
 # Iter8or
+[![npm version](https://badge.fury.io/js/iter8or.svg)](https://www.npmjs.com/package/iter8or)
 
 [Документация](https://tanyalagodich.github.io/Iter8or/ru/)
 
