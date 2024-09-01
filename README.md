@@ -1,5 +1,6 @@
 # Iter8or
 [![npm version](https://badge.fury.io/js/iter8or.svg)](https://www.npmjs.com/package/iter8or)
+
 [Documentation](https://tanyalagodich.github.io/Iter8or/)
 
 Iter8or is a versatile library for working with iterators and asynchronous iterators in JavaScript. It provides powerful methods for processing, filtering, combining, and transforming data, and even allows the creation of iterators from non-iterable objects.
