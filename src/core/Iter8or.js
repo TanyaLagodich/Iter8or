@@ -200,7 +200,3 @@ function fetchApiData2() {
   });
 }
 
-const iter = new Iter8or([fetchApiData1, fetchApiData2], { async: true });
-
-
-console.log(await iter.next());
