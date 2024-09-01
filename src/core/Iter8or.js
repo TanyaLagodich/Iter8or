@@ -72,7 +72,7 @@ export default class Iter8or {
 
   next() {
     if (!this.iterator) {
-      this.iterator = this[Symbol.iterator]();
+      this.iterator = this.options.async ? this[Symbol.asyncIterator]() : this[Symbol.iterator]();
     }
     return this.iterator.next();
   }
@@ -183,3 +183,24 @@ export default class Iter8or {
     return toString(this.iterable);
   }
 }
+
+function fetchApiData1() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([1, 2, 3, 4, 5]);
+    }, 1000);
+  });
+}
+
+function fetchApiData2() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([6, 7, 8, 9, 10]);
+    }, 1500);
+  });
+}
+
+const iter = new Iter8or([fetchApiData1, fetchApiData2], { async: true });
+
+
+console.log(await iter.next());
