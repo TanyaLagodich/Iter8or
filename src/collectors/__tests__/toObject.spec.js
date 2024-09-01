@@ -1,22 +1,22 @@
-import toObject from '../toObject.js';
+import toMap from '../toMap.js';
 
-describe('toObject', () => {
+describe('toMap', () => {
     describe('works with sync iterators', () => {
         it('should correctly convert iterable of key-value pairs to an object', () => {
             const iterable = [['a', 1], ['b', 2], ['c', 3]];
-            const result = toObject(iterable);
+            const result = toMap(iterable);
             expect(result).toEqual({ a: 1, b: 2, c: 3 });
         });
 
         it('should correctly convert iterable of values to an object with indexes as keys', () => {
             const iterable = ['a', 'b', 'c'];
-            const result = toObject(iterable);
+            const result = toMap(iterable);
             expect(result).toEqual({ 0: 'a', 1: 'b', 2: 'c' });
         });
 
         it('should correctly handle iterable with mixed key-value pairs and values', () => {
             const iterable = [['a', 1], 'b', ['c', 3], 'd'];
-            const result = toObject(iterable);
+            const result = toMap(iterable);
             expect(result).toEqual({ a: 1, 0: 'b', c: 3, 1: 'd' });
         });
     });
@@ -30,7 +30,7 @@ describe('toObject', () => {
                     yield ['c', 3];
                 },
             };
-            const result = await toObject(asyncIterable);
+            const result = await toMap(asyncIterable);
             expect(result).toEqual({ a: 1, b: 2, c: 3 });
         });
 
@@ -42,7 +42,7 @@ describe('toObject', () => {
                     yield 'c';
                 },
             };
-            const result = await toObject(asyncIterable);
+            const result = await toMap(asyncIterable);
             expect(result).toEqual({ 0: 'a', 1: 'b', 2: 'c' });
         });
 
@@ -55,13 +55,13 @@ describe('toObject', () => {
                     yield 'd';
                 },
             };
-            const result = await toObject(asyncIterable);
+            const result = await toMap(asyncIterable);
             expect(result).toEqual({ a: 1, 0: 'b', c: 3, 1: 'd' });
         });
 
         it('should throw a TypeError if the argument is not iterable', () => {
-            expect(() => toObject(123)).toThrow(TypeError);
-            expect(() => toObject(123)).toThrow('The argument must be iterable');
+            expect(() => toMap(123)).toThrow(TypeError);
+            expect(() => toMap(123)).toThrow('The argument must be iterable');
         });
     });
 });

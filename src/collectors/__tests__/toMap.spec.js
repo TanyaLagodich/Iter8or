@@ -1,33 +1,67 @@
-import { toMap } from '../index.js';
+import toMap from '../toMap.js';
 
 describe('toMap', () => {
-  it('should return the Map from the array', () => {
-    const array = [1, 2, 3];
-    const result = toMap(array);
+  describe('works with sync iterators', () => {
+    it('should correctly convert iterable of key-value pairs to an object', () => {
+      const iterable = [['a', 1], ['b', 2], ['c', 3]];
+      const result = toMap(iterable);
+      expect(result).toEqual(new Map([['a', 1], ['b', 2], ['c', 3]]));
+    });
 
-    expect(result).toBeInstanceOf(Map);
-    expect(result.size).toBe(3);
-    expect(result.get(0)).toBe(1);
-    expect(result.get(1)).toBe(2);
-    expect(result.get(2)).toBe(3);
+    it('should correctly convert iterable of values to an object with indexes as keys', () => {
+      const iterable = ['a', 'b', 'c'];
+      const result = toMap(iterable);
+      expect(result).toEqual(new Map([[0, 'a'], [1, 'b'], [2, 'c']]));
+    });
+
+    it('should correctly handle iterable with mixed key-value pairs and values', () => {
+      const iterable = [['a', 1], 'b', ['c', 3], 'd'];
+      const result = toMap(iterable);
+      expect(result).toEqual(new Map([['a', 1], [0, 'b'], ['c', 3], [1, 'd']]));
+    });
   });
 
-  it('should return the Map from the string', () => {
-    const array = 'hello world';
-    const result = toMap(array);
+  describe('works with async iterators', () => {
+    it('should correctly convert iterable of key-value pairs to an object', async () => {
+      const asyncIterable = {
+        async *[Symbol.asyncIterator]() {
+          yield ['a', 1];
+          yield ['b', 2];
+          yield ['c', 3];
+        },
+      };
+      const result = await toMap(asyncIterable);
+      expect(result).toEqual(new Map([['a', 1], ['b', 2], ['c', 3]]));
+    });
 
-    expect(result).toBeInstanceOf(Map);
-    expect(result.size).toBe(11);
-    expect(result.get(0)).toBe('h');
-    expect(result.get(1)).toBe('e');
-    expect(result.get(2)).toBe('l');
-    expect(result.get(3)).toBe('l');
-    expect(result.get(4)).toBe('o');
-    expect(result.get(5)).toBe(' ');
-    expect(result.get(6)).toBe('w');
-    expect(result.get(7)).toBe('o');
-    expect(result.get(8)).toBe('r');
-    expect(result.get(9)).toBe('l');
-    expect(result.get(10)).toBe('d');
+    it('should correctly convert iterable of values to an object with indexes as keys', async () => {
+      const asyncIterable = {
+        async *[Symbol.asyncIterator]() {
+          yield 'a';
+          yield 'b';
+          yield 'c';
+        },
+      };
+      const result = await toMap(asyncIterable);
+      expect(result).toEqual(new Map([[0, 'a'], [1, 'b'], [2, 'c']]));
+    });
+
+    it('should correctly handle iterable with mixed key-value pairs and values', async () => {
+      const asyncIterable = {
+        async *[Symbol.asyncIterator]() {
+          yield ['a', 1];
+          yield 'b';
+          yield ['c', 3];
+          yield 'd';
+        },
+      };
+      const result = await toMap(asyncIterable);
+      expect(result).toEqual(new Map([['a', 1], [0, 'b'], ['c', 3], [1, 'd']]));
+    });
+
+    it('should throw a TypeError if the argument is not iterable', () => {
+      expect(() => toMap(123)).toThrow(TypeError);
+      expect(() => toMap(123)).toThrow('The argument must be iterable');
+    });
   });
 });

@@ -1,4 +1,4 @@
-const toObjectSync = (iterable) => {
+const toMapSync = (iterable) => {
   const obj = {};
   let index = 0;
 
@@ -15,7 +15,7 @@ const toObjectSync = (iterable) => {
   return obj;
 };
 
-const toObjectAsync = async (iterable) => {
+const toMapAsync = async (iterable) => {
   const obj = {};
   let index = 0;
 
@@ -33,11 +33,11 @@ const toObjectAsync = async (iterable) => {
   return obj;
 };
 
-export default function toObject(iterable) {
+export default function toMap(iterable) {
   if (!iterable[Symbol.iterator] && !iterable[Symbol.asyncIterator]) {
     throw new TypeError('The argument must be iterable');
   }
   return typeof iterable[Symbol.asyncIterator] === 'function'
-      ? toObjectAsync(iterable)
-      : toObjectSync(iterable);
+      ? toMapAsync(iterable)
+      : toMapSync(iterable);
 }
