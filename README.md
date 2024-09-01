@@ -74,3 +74,5 @@ for await (const value of asyncIter) {
 Numbers (`number`) are always processed as **_synchronous_** iterators, regardless of whether the `{ async: true }` option is passed or not.
 
 [🔍 Learn more about each method of the Iter8or class](https://tanyalagodich.github.io/Iter8or/Iter8or.html)
+
+[🇷🇺 Перейти на русский](https://tanyalagodich.github.io/Iter8or/ru/)
