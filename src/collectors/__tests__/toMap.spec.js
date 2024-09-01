@@ -3,21 +3,44 @@ import toMap from '../toMap.js';
 describe('toMap', () => {
   describe('works with sync iterators', () => {
     it('should correctly convert iterable of key-value pairs to an object', () => {
-      const iterable = [['a', 1], ['b', 2], ['c', 3]];
+      const iterable = [
+        ['a', 1],
+        ['b', 2],
+        ['c', 3],
+      ];
       const result = toMap(iterable);
-      expect(result).toEqual(new Map([['a', 1], ['b', 2], ['c', 3]]));
+      expect(result).toEqual(
+        new Map([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3],
+        ])
+      );
     });
 
     it('should correctly convert iterable of values to an object with indexes as keys', () => {
       const iterable = ['a', 'b', 'c'];
       const result = toMap(iterable);
-      expect(result).toEqual(new Map([[0, 'a'], [1, 'b'], [2, 'c']]));
+      expect(result).toEqual(
+        new Map([
+          [0, 'a'],
+          [1, 'b'],
+          [2, 'c'],
+        ])
+      );
     });
 
     it('should correctly handle iterable with mixed key-value pairs and values', () => {
       const iterable = [['a', 1], 'b', ['c', 3], 'd'];
       const result = toMap(iterable);
-      expect(result).toEqual(new Map([['a', 1], [0, 'b'], ['c', 3], [1, 'd']]));
+      expect(result).toEqual(
+        new Map([
+          ['a', 1],
+          [0, 'b'],
+          ['c', 3],
+          [1, 'd'],
+        ])
+      );
     });
   });
 
@@ -31,7 +54,13 @@ describe('toMap', () => {
         },
       };
       const result = await toMap(asyncIterable);
-      expect(result).toEqual(new Map([['a', 1], ['b', 2], ['c', 3]]));
+      expect(result).toEqual(
+        new Map([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3],
+        ])
+      );
     });
 
     it('should correctly convert iterable of values to an object with indexes as keys', async () => {
@@ -43,7 +72,13 @@ describe('toMap', () => {
         },
       };
       const result = await toMap(asyncIterable);
-      expect(result).toEqual(new Map([[0, 'a'], [1, 'b'], [2, 'c']]));
+      expect(result).toEqual(
+        new Map([
+          [0, 'a'],
+          [1, 'b'],
+          [2, 'c'],
+        ])
+      );
     });
 
     it('should correctly handle iterable with mixed key-value pairs and values', async () => {
@@ -56,7 +91,14 @@ describe('toMap', () => {
         },
       };
       const result = await toMap(asyncIterable);
-      expect(result).toEqual(new Map([['a', 1], [0, 'b'], ['c', 3], [1, 'd']]));
+      expect(result).toEqual(
+        new Map([
+          ['a', 1],
+          [0, 'b'],
+          ['c', 3],
+          [1, 'd'],
+        ])
+      );
     });
 
     it('should throw a TypeError if the argument is not iterable', () => {

@@ -21,7 +21,7 @@ import {
   toObject,
   toSet,
   toString,
-} from '../collectors/index.js'
+} from '../collectors/index.js';
 
 /**
  * @class Iter8or
@@ -432,7 +432,7 @@ export default class Iter8or {
    * console.log(set); // Set { 1, 2, 3, 4 }
    */
   toSet() {
-    return toSet(this.iterable)
+    return toSet(this.iterable);
   }
 
   /**
@@ -450,17 +450,3 @@ export default class Iter8or {
     return toString(this.iterable);
   }
 }
-
-const groupByLength = (word) => word.length;
-const syncIter = new Iter8or('big string');
-console.log(syncIter.groupBy(groupByLength));
-
-const asyncIter = new Iter8or([
-    async () => 'apple',
-    async () => 'banana',
-    async () => 'cherry',
-    async () => 'date',
-    async () => 'fig',
-], { async: true });
-
-console.log(await asyncIter.groupBy(groupByLength));

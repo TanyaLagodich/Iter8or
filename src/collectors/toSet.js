@@ -19,6 +19,6 @@ export default function toSet(iterable) {
     throw new TypeError('The argument must be iterable');
   }
   return typeof iterable[Symbol.asyncIterator] === 'function'
-      ? toSetAsync(iterable)
-      : toSetSync(iterable);
+    ? toSetAsync(iterable)
+    : toSetSync(iterable);
 }

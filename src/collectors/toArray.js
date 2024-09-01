@@ -20,6 +20,6 @@ export default function toArray(iterable) {
   }
 
   return typeof iterable[Symbol.asyncIterator] === 'function'
-      ? toArrayAsync(iterable)
-      : toArraySync(iterable);
+    ? toArrayAsync(iterable)
+    : toArraySync(iterable);
 }

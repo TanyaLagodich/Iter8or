@@ -38,6 +38,6 @@ export default function toMap(iterable) {
     throw new TypeError('The argument must be iterable');
   }
   return typeof iterable[Symbol.asyncIterator] === 'function'
-      ? toMapAsync(iterable)
-      : toMapSync(iterable);
+    ? toMapAsync(iterable)
+    : toMapSync(iterable);
 }

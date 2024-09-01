@@ -15,7 +15,7 @@ describe('toArray', () => {
     });
 
     it('should correctly concatenate elements from string', () => {
-      const iterable = 'Hello'
+      const iterable = 'Hello';
       const result = toArray(iterable);
       expect(result).toEqual(['H', 'e', 'l', 'l', 'o']);
     });
@@ -46,7 +46,6 @@ describe('toArray', () => {
       expect(result).toEqual(['a', 'b', 'c']);
     });
 
-
     it('should correctly handle a mix of sync and async values in an asynchronous iterable', async () => {
       const asyncIterable = {
         async *[Symbol.asyncIterator]() {
@@ -63,6 +62,5 @@ describe('toArray', () => {
       expect(() => toArray(123)).toThrow(TypeError);
       expect(() => toArray(123)).toThrow('The argument must be iterable');
     });
-
   });
 });
