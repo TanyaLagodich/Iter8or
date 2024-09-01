@@ -13,6 +13,7 @@ import { DigitsIterable } from './DigitsIterable.js';
 import { RangeIterable } from './RangeIterable.js';
 import { ObjectIterable } from './ObjectIterable.js';
 import { convertToAsyncIterator } from '../utils/convertToAsyncIterator.js';
+import toString from "../collectors/toString.js";
 
 /**
  * @class Iter8or
@@ -331,6 +332,19 @@ export default class Iter8or {
   sum(fn) {
     return sum(this.iterable, fn);
   }
+
+  toString() {
+    return toString(this.iterable);
+  }
 }
 
-console.log('work');
+const syncIter = new Iter8or([1, 2, 3]);
+console.log(syncIter.toString());
+
+const asyncIter = new Iter8or([
+    async () => 1,
+    async () => 2,
+    async () => 3,
+], { async: true });
+
+console.log(await asyncIter.toString());
