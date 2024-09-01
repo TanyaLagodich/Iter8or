@@ -38,7 +38,7 @@ jobs:
         run: npm install
 
       - name: Generate English Documentation
-        run: npm run generate-docs-en
+        run: npm run generate-docs
 
       - name: Generate Russian Documentation
         run: npm run generate-docs-ru

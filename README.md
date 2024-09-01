@@ -9,7 +9,7 @@ Iter8or is a versatile library for working with iterators and asynchronous itera
 - **Support for both synchronous and asynchronous iterators**: Process both synchronous and asynchronous data using a single API.
 - **Creation of iterators from non-iterable objects:**:
   - For numbers (`number`): By default, it creates an iterator that iterates from 1 to the specified number (range).
-  - `digits` option: If the `{ digits: true }` option is passed, the number is split into individual digits, creating an iterator over the digits of the number. на отдельные разряды, создавая итератор по цифрам числа.
+  - `digits` option: If the `{ digits: true }` option is passed, the number is split into individual digits, creating an iterator over the digits of the number.
   - For objects (`object`): An iterator is created that iterates over the keys and values of the object.
 - **Powerful data processing methods**: Built-in methods for filtering, mapping, grouping, splitting, combining, and other data operations.
 
