@@ -14,6 +14,7 @@ import { RangeIterable } from './RangeIterable.js';
 import { ObjectIterable } from './ObjectIterable.js';
 import { convertToAsyncIterator } from '../utils/convertToAsyncIterator.js';
 import {
+  partition,
   toArray,
   toMap,
   toObject,
@@ -339,6 +340,10 @@ export default class Iter8or {
     return sum(this.iterable, fn);
   }
 
+  partition(predicate) {
+    return partition(this.iterable, predicate);
+  }
+
   toArray() {
     return toArray(this.iterable);
   }
@@ -360,13 +365,16 @@ export default class Iter8or {
   }
 }
 
-const syncIter = new Iter8or(12);
-console.log(syncIter.toArray());
+const isEven = (n) => n % 2 === 0;
+const syncIter = new Iter8or([1, 2, 3, 4, 5]);
+console.log(syncIter.partition(isEven));
 
 const asyncIter = new Iter8or([
-    async () => '1',
-    async () => 'd',
-    async () => 'f',
+    async () => 1,
+    async () => 2,
+    async () => 3,
+    async () => 4,
+    async () => 5,
 ], { async: true });
 
-console.log(await asyncIter.toArray());
+console.log(await asyncIter.partition(isEven));
