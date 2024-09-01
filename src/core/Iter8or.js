@@ -14,6 +14,7 @@ import { RangeIterable } from './RangeIterable.js';
 import { ObjectIterable } from './ObjectIterable.js';
 import { convertToAsyncIterator } from '../utils/convertToAsyncIterator.js';
 import {
+  groupBy,
   partition,
   toArray,
   toMap,
@@ -340,6 +341,10 @@ export default class Iter8or {
     return sum(this.iterable, fn);
   }
 
+  groupBy(grouper) {
+    return groupBy(this.iterable, grouper);
+  }
+
   partition(predicate) {
     return partition(this.iterable, predicate);
   }
@@ -365,16 +370,16 @@ export default class Iter8or {
   }
 }
 
-const isEven = (n) => n % 2 === 0;
-const syncIter = new Iter8or([1, 2, 3, 4, 5]);
-console.log(syncIter.partition(isEven));
+const groupByLength = (word) => word.length;
+const syncIter = new Iter8or('big string');
+console.log(syncIter.groupBy(groupByLength));
 
 const asyncIter = new Iter8or([
-    async () => 1,
-    async () => 2,
-    async () => 3,
-    async () => 4,
-    async () => 5,
+    async () => 'apple',
+    async () => 'banana',
+    async () => 'cherry',
+    async () => 'date',
+    async () => 'fig',
 ], { async: true });
 
-console.log(await asyncIter.partition(isEven));
+console.log(await asyncIter.groupBy(groupByLength));
