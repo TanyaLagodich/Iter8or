@@ -53,7 +53,7 @@ export default class Iter8or {
   [Symbol.iterator]() {
     if (this.options.async) {
       throw new TypeError(
-        'This is a async iterable. Use Symbol.asyncIterator instead.'
+          'This is a async iterable. Use Symbol.asyncIterator instead.'
       );
     } else {
       return this.iterable[Symbol.iterator]();
@@ -63,7 +63,7 @@ export default class Iter8or {
   [Symbol.asyncIterator]() {
     if (!this.options.async) {
       throw new TypeError(
-        'This is a sync iterable. Use Symbol.iterator instead.'
+          'This is a sync iterable. Use Symbol.iterator instead.'
       );
     }
 
@@ -97,8 +97,8 @@ export default class Iter8or {
 
   filter(predicate) {
     return new Iter8or(
-      createFilterIterator(this.iterable, predicate),
-      this.options
+        createFilterIterator(this.iterable, predicate),
+        this.options
     );
   }
 
@@ -127,11 +127,11 @@ export default class Iter8or {
       throw new Error('All concatted iterators must be an Iter8or.');
     }
     return new Iter8or(
-      createConcatIterator(
-        this.iterable,
-        ...iterators.map((iterator) => iterator.iterable)
-      ),
-      this.options
+        createConcatIterator(
+            this.iterable,
+            ...iterators.map((iterator) => iterator.iterable)
+        ),
+        this.options
     );
   }
 
