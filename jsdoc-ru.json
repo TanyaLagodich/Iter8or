@@ -10,7 +10,7 @@
     "readme": "./README.ru.md",
     "template": "node_modules/clean-jsdoc-theme",
     "theme_opts": {
-      "title": "Документация Iter8or (Русский)",
+      "title": "Документация Iter8o",
       "includeFilesListInHomepage": true,
       "search": true,
       "menu": [
@@ -22,7 +22,7 @@
         {
           "title": "English Version",
           "id": "en",
-          "link": "/index.html"
+          "link": "/"
         }
       ]
     }

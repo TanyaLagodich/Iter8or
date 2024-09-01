@@ -10,7 +10,7 @@
     "readme": "./README.md",
     "template": "node_modules/clean-jsdoc-theme",
     "theme_opts": {
-      "title": "Iter8or Documentation (English)",
+      "title": "Iter8or Documentation",
       "includeFilesListInHomepage": true,
       "search": true,
       "menu": [
@@ -22,7 +22,7 @@
         {
           "title": "Русская версия",
           "id": "ru",
-          "link": "/ru/index.html"
+          "link": "/Iter8or/ru"
         }
       ]
     }
