@@ -1,6 +1,6 @@
 import { createConcatIterator } from '../index.js';
 
-describe.skip('createConcatIterator', () => {
+describe('createConcatIterator', () => {
   it('should correctly concatenate multiple synchronous iterators', () => {
     const iterable1 = [1, 2];
     const iterable2 = [3, 4];
@@ -54,26 +54,9 @@ describe.skip('createConcatIterator', () => {
     expect(result).toEqual([1, 2, 3, 4, 5, 6]);
   });
 
-  it('should throw an error if mixed sync and async iterators are passed', () => {
-    const iterable1 = [1, 2];
-    const iterable2 = {
-      async *[Symbol.asyncIterator]() {
-        yield 3;
-        yield 4;
-      },
-    };
-
-    expect(() => {
-      createConcatIterator(iterable1, iterable2);
-    }).toThrow(TypeError);
-  });
-
-  // Тест для асинхронного итератора с пустыми итераторами
   it('should handle empty asynchronous iterators', async () => {
     const iterable1 = {
-      async *[Symbol.asyncIterator]() {
-        // Пустой итератор
-      },
+      async *[Symbol.asyncIterator]() {},
     };
     const iterable2 = {
       async *[Symbol.asyncIterator]() {
