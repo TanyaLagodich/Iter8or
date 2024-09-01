@@ -7,12 +7,12 @@ export default {
   input: 'src/index.js',
   output: [
     {
-      file: 'dist/iter8or.cjs.js',
+      file: 'dist/iter8or.cjs',
       format: 'cjs',
       sourcemap: true,
     },
     {
-      file: 'dist/iter8or.esm.js',
+      file: 'dist/iter8or.mjs',
       format: 'esm',
       sourcemap: true,
     },

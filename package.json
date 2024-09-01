@@ -2,11 +2,11 @@
   "name": "iter8or",
   "version": "1.0.3",
   "description": "A versatile library for working with iterators and asynchronous iterators in JavaScript. It provides powerful methods for processing, filtering, combining, and transforming data, and even allows the creation of iterators from non-iterable objects.",
-  "main": "dist/iter8or.cjs.js",
-  "module": "dist/iter8or.esm.js",
+  "main": "dist/iter8or.cjs",
+  "module": "dist/iter8or.mjs",
   "exports": {
-    "import": "./dist/iter8or.esm.js",
-    "require": "./dist/iter8or.cjs.js"
+    "import": "./dist/iter8or.mjs",
+    "require": "./dist/iter8or.cjs"
   },
   "type": "module",
   "keywords": [
@@ -22,8 +22,8 @@
   "license": "MIT",
   "homepage": "https://tanyalagodich.github.io/Iter8or/",
   "files": [
-    "dist/iter8or.esm.js",
-    "dist/iter8or.cjs.js"
+    "dist/iter8or.mjs",
+    "dist/iter8or.cjs"
   ],
   "scripts": {
     "build": "rollup -c",
