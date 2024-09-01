@@ -5,7 +5,7 @@
     "excludePattern": "(^|\\/|\\\\)node_modules"
   },
   "opts": {
-    "destination": "./docs/en",
+    "destination": "./docs",
     "recurse": true,
     "readme": "./README.md",
     "template": "node_modules/clean-jsdoc-theme",
