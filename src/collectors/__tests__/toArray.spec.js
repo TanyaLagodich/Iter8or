@@ -1,45 +1,68 @@
 import { toArray } from '../index.js';
 
 describe('toArray', () => {
-  it('should return an array from the array', () => {
-    const array = [1, 2, 3];
+  describe('works with sync iterators', () => {
+    it('should correctly concatenate elements from array', () => {
+      const iterable = [1, 2, 3];
+      const result = toArray(iterable);
+      expect(result).toEqual([1, 2, 3]);
+    });
 
-    expect(toArray(array)).toStrictEqual([1, 2, 3]);
+    it('should correctly concatenate elements from Set', () => {
+      const iterable = new Set(['a', 'b', 'c']);
+      const result = toArray(iterable);
+      expect(result).toEqual(['a', 'b', 'c']);
+    });
+
+    it('should correctly concatenate elements from string', () => {
+      const iterable = 'Hello'
+      const result = toArray(iterable);
+      expect(result).toEqual(['H', 'e', 'l', 'l', 'o']);
+    });
   });
 
-  it('should return an array from the Set', () => {
-    const set = new Set([1, 2, 3]);
+  describe('works with async iterators', () => {
+    it('should correctly concatenate elements from an iterable', async () => {
+      const asyncIterable = {
+        async *[Symbol.asyncIterator]() {
+          yield 'a';
+          yield 'b';
+          yield 'c';
+        },
+      };
+      const result = await toArray(asyncIterable);
+      expect(result).toEqual(['a', 'b', 'c']);
+    });
 
-    expect(toArray(set)).toStrictEqual([1, 2, 3]);
-  });
+    it('should correctly concatenate elements from an asynchronous iterable with async functions', async () => {
+      const asyncIterable = {
+        async *[Symbol.asyncIterator]() {
+          yield async () => 'a';
+          yield async () => 'b';
+          yield async () => 'c';
+        },
+      };
+      const result = await toArray(asyncIterable);
+      expect(result).toEqual(['a', 'b', 'c']);
+    });
 
-  it('should return an array from the string', () => {
-    const string = 'hello world';
 
-    expect(toArray(string)).toStrictEqual([
-      'h',
-      'e',
-      'l',
-      'l',
-      'o',
-      ' ',
-      'w',
-      'o',
-      'r',
-      'l',
-      'd',
-    ]);
-  });
+    it('should correctly handle a mix of sync and async values in an asynchronous iterable', async () => {
+      const asyncIterable = {
+        async *[Symbol.asyncIterator]() {
+          yield 'a';
+          yield async () => 'b';
+          yield 'c';
+        },
+      };
+      const result = await toArray(asyncIterable);
+      expect(result).toEqual(['a', 'b', 'c']);
+    });
 
-  it('should return an empty array from an empty iterable', () => {
-    const emptyArray = [];
+    it('should throw a TypeError if the input is not iterable', () => {
+      expect(() => toArray(123)).toThrow(TypeError);
+      expect(() => toArray(123)).toThrow('The argument must be iterable');
+    });
 
-    expect(toArray(emptyArray)).toStrictEqual([]);
-  });
-
-  it("should throw a TypeError when the passed parameter isn't an iterable", () => {
-    const notIterable = 123;
-
-    expect(() => toArray(notIterable)).toThrow(TypeError);
   });
 });

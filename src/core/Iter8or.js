@@ -14,6 +14,7 @@ import { RangeIterable } from './RangeIterable.js';
 import { ObjectIterable } from './ObjectIterable.js';
 import { convertToAsyncIterator } from '../utils/convertToAsyncIterator.js';
 import {
+  toArray,
   toMap,
   toObject,
   toSet,
@@ -338,12 +339,16 @@ export default class Iter8or {
     return sum(this.iterable, fn);
   }
 
-  toMap() {
-    return toMap(this.iterable);
+  toArray() {
+    return toArray(this.iterable);
   }
 
   toMap() {
     return toMap(this.iterable);
+  }
+
+  toObject() {
+    return toObject(this.iterable);
   }
 
   toSet() {
@@ -355,13 +360,13 @@ export default class Iter8or {
   }
 }
 
-const syncIter = new Iter8or([1, 2, 3]);
-console.log(syncIter.toMap());
+const syncIter = new Iter8or(12);
+console.log(syncIter.toArray());
 
 const asyncIter = new Iter8or([
-    async () => 1,
-    async () => 2,
-    async () => 3,
+    async () => '1',
+    async () => 'd',
+    async () => 'f',
 ], { async: true });
 
-console.log(await asyncIter.toMap());
+console.log(await asyncIter.toArray());
