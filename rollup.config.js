@@ -1,12 +1,9 @@
-const resolve = require('@rollup/plugin-node-resolve');
-const commonjs = require('@rollup/plugin-commonjs');
-const { babel } = require('@rollup/plugin-babel');
-const terser = require('@rollup/plugin-terser');
-const cleaner = require('rollup-plugin-cleaner');
-const alias = require('@rollup/plugin-alias');
-const path = require('path');
+import resolve from'@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import { babel } from '@rollup/plugin-babel';
+import cleaner from 'rollup-plugin-cleaner';
 
-module.exports = {
+export default {
   input: 'src/index.js',
   output: [
     {
@@ -19,13 +16,6 @@ module.exports = {
       format: 'esm',
       sourcemap: true,
     },
-    {
-      file: 'dist/iter8or.min.js',
-      format: 'umd',
-      name: 'Iter8or',
-      sourcemap: true,
-      plugins: [terser()],
-    },
   ],
   plugins: [
     cleaner({
@@ -36,9 +26,6 @@ module.exports = {
     babel({
       exclude: 'node_modules/**',
       babelHelpers: 'bundled',
-    }),
-    alias({
-      entries: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
     }),
   ],
 };

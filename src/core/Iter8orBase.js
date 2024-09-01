@@ -333,46 +333,4 @@ export default class Iter8or {
   }
 }
 
-// const iterator1 = new Iter8or([0, 1, [2, [3, [4, 5]]]]);
-// const iterator2 = new Iter8or([4, 5, 6]);
-// const iterator3 = new Iter8or([7, 8, 9]);
-//
-// console.log(new Iter8or([1, 2, 3, 4, 5]).sum());
-//
-// console.log(
-//   await new Iter8or(
-//     [async () => 1, async () => 2, async () => 3, async () => 4, async () => 5],
-//     { async: true }
-//   ).sum()
-// );
-
-// console.log([...iterator1.flat(Infinity)])
-//
-// const concated = iterator1.concat(iterator2, iterator3);
-// console.log([...concated.flat(Infinity)]);
-// console.log(concated.flatMap(i => [i, i * 2]));
-// console.log([...iterator1.flatMap(i => [i, i * 2])])
-
-// for (const item of iterator1.flatMap(i => [i, i * 2])) {
-//   console.log(item);
-// }
-
-// const asyncIterator1 = new Iter8or(
-//   [async () => 1, [async () => 2, async () => 3]],
-//   { async: true }
-// );
-//
-// const asyncIterator2 = new Iter8or(
-//   [async () => 7, [async () => 8, async () => 9]],
-//   { async: true }
-// );
-//
-// async function forOf() {
-//   for await (const value of asyncIterator1.concat(asyncIterator2)) {
-//     // console.log(value);
-//   }
-// }
-//
-// // await forOf();
-//
-// console.log(asyncIterator1.concat(asyncIterator2));
+console.log('work');
