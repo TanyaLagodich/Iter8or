@@ -34,7 +34,14 @@ export default class Iter8or {
     }
 
     if (typeof iterable === 'function') {
-      throw new TypeError('Cannot create an iterable from a function.');
+      iterable = iterable();
+
+      if (
+        !iterable ||
+        (!iterable[Symbol.iterator] && !iterable[Symbol.asyncIterator])
+      ) {
+        throw new TypeError('Cannot create an iterable from a function.');
+      }
     }
 
     this.options = options;
@@ -53,26 +60,88 @@ export default class Iter8or {
   [Symbol.iterator]() {
     if (this.options.async) {
       throw new TypeError(
-          'This is a async iterable. Use Symbol.asyncIterator instead.'
+        'This is a async iterable. Use Symbol.asyncIterator instead.'
       );
     } else {
-      return this.iterable[Symbol.iterator]();
+      const iterator = this.iterable[Symbol.iterator]();
+      const stack = [iterator];
+
+      return {
+        next() {
+          while (stack.length > 0) {
+            const currentIterator = stack[stack.length - 1];
+            const { done, value } = currentIterator.next();
+
+            if (done) {
+              stack.pop();
+              continue;
+            }
+
+            if (
+              value &&
+              (typeof value[Symbol.iterator] === 'function' ||
+                typeof value[Symbol.asyncIterator] === 'function')
+            ) {
+              stack.push(value);
+              continue;
+            }
+
+            return { done: false, value };
+          }
+
+          return { done: true, value: undefined };
+        },
+        [Symbol.iterator]() {
+          return this;
+        },
+      };
     }
   }
 
   [Symbol.asyncIterator]() {
     if (!this.options.async) {
       throw new TypeError(
-          'This is a sync iterable. Use Symbol.iterator instead.'
+        'This is a sync iterable. Use Symbol.iterator instead.'
       );
     }
 
-    return this.iterable[Symbol.asyncIterator]();
+    const iterator = this.iterable[Symbol.asyncIterator]();
+    const stack = [iterator]; // Стек для хранения текущих итераторов
+    return {
+      async next() {
+        while (stack.length > 0) {
+          const currentIterator = stack[stack.length - 1];
+          const { done, value } = await currentIterator.next();
+
+          if (done) {
+            stack.pop();
+            continue;
+          }
+
+          if (
+            (value && typeof value[Symbol.asyncIterator] === 'function') ||
+            typeof value[Symbol.iterator] === 'function'
+          ) {
+            stack.push(value);
+            continue;
+          }
+
+          return { done: false, value };
+        }
+
+        return { done: true, value: undefined };
+      },
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+    };
   }
 
   next() {
     if (!this.iterator) {
-      this.iterator = this.options.async ? this[Symbol.asyncIterator]() : this[Symbol.iterator]();
+      this.iterator = this.options.async
+        ? this[Symbol.asyncIterator]()
+        : this[Symbol.iterator]();
     }
     return this.iterator.next();
   }
@@ -97,8 +166,8 @@ export default class Iter8or {
 
   filter(predicate) {
     return new Iter8or(
-        createFilterIterator(this.iterable, predicate),
-        this.options
+      createFilterIterator(this.iterable, predicate),
+      this.options
     );
   }
 
@@ -127,11 +196,11 @@ export default class Iter8or {
       throw new Error('All concatted iterators must be an Iter8or.');
     }
     return new Iter8or(
-        createConcatIterator(
-            this.iterable,
-            ...iterators.map((iterator) => iterator.iterable)
-        ),
-        this.options
+      createConcatIterator(
+        this.iterable,
+        ...iterators.map((iterator) => iterator.iterable)
+      ),
+      this.options
     );
   }
 

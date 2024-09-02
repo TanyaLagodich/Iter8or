@@ -10,7 +10,6 @@
  * @throws {TypeError} If `iterable` is null, undefined, boolean, or function.
  */
 
-
 /**
  * Returns the next value in the iteration.
  * @method next

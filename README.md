@@ -8,6 +8,7 @@ Iter8or is a versatile library for working with iterators and asynchronous itera
 ## Features
 
 - **Support for both synchronous and asynchronous iterators**: Process both synchronous and asynchronous data using a single API.
+- **Support for generator functions**: You can pass generator functions or async generator functions to the `Iter8or` constructor. The function will be invoked automatically, and the returned iterator will be used.
 - **Creation of iterators from non-iterable objects:**:
   - For numbers (`number`):
     - **By default**, an iterator is created that iterates from _1_ (or _-1_ if the number is negative) to the specified number inclusively (range).
@@ -54,6 +55,34 @@ for (const [key, value] of objIter) {
 }
 // a 1
 // b 2
+```
+
+- ### With a generator function
+```javascript
+function* generatorFunction() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const iter = new Iter8or(generatorFunction);
+console.log([...iter]); // [1, 2, 3]
+```
+
+- ### With an async generator function
+```javascript
+async function* asyncGeneratorFunction() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const iter = new Iter8or(asyncGeneratorFunction, { async: true });
+(async () => {
+  for await (const value of iter) {
+    console.log(value); // 1, 2, 3
+  }
+})();
 ```
 
 ## Working with Asynchronous Iterators

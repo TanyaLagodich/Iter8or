@@ -118,4 +118,68 @@ describe('Iter8or class', () => {
     const str = iter.toString();
     expect(str).toBe('Hello');
   });
+
+  it('should handle generator objects correctly', () => {
+    function* generator() {
+      yield 1;
+      yield 2;
+      yield 3;
+    }
+
+    const iter = new Iter8or(generator());
+    expect([...iter]).toEqual([1, 2, 3]);
+  });
+
+  it('should handle generator functions correctly by invoking them', () => {
+    function* generatorFunction() {
+      yield 1;
+      yield 2;
+      yield 3;
+    }
+
+    const iter = new Iter8or(generatorFunction);
+    expect([...iter]).toEqual([1, 2, 3]);
+  });
+
+  it('should throw an error if a function does not return an iterable', () => {
+    const nonIterableFunction = () => 123;
+
+    expect(() => {
+      new Iter8or(nonIterableFunction);
+    }).toThrow(TypeError);
+  });
+
+  it('should handle functions returning iterables', () => {
+    const iter = new Iter8or(() => [1, 2, 3]);
+    expect([...iter]).toEqual([1, 2, 3]);
+  });
+
+  it('should handle functions returning async iterables', async () => {
+    const asyncFunc = async function* () {
+      yield 1;
+      yield 2;
+      yield 3;
+    };
+    const iter = new Iter8or(asyncFunc(), { async: true });
+    const result = [];
+    for await (const value of iter) {
+      result.push(value);
+    }
+    expect(result).toEqual([1, 2, 3]);
+  });
+
+  it('should handle async generator objects correctly', async () => {
+    async function* asyncGenerator() {
+      yield 1;
+      yield 2;
+      yield 3;
+    }
+
+    const iter = new Iter8or(asyncGenerator(), { async: true });
+    const result = [];
+    for await (const value of iter) {
+      result.push(value);
+    }
+    expect(result).toEqual([1, 2, 3]);
+  });
 });
