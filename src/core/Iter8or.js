@@ -147,7 +147,7 @@ export default class Iter8or {
   }
 
   #createIterable(iterable) {
-    if (typeof iterable === 'number') {
+    if (typeof iterable === 'number' || typeof iterable === 'bigint') {
       if (this.options.digits) {
         this.iterable = new DigitsIterable(iterable);
       } else {
