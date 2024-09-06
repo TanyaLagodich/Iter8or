@@ -14,11 +14,11 @@ describe('RangeIterable', () => {
   });
 
   it('should throw an error if number exceeds the positive limit', () => {
-    expect(() => new RangeIterable(2 ** 32)).toThrow(RangeError);
+    expect(() => new RangeIterable(Number.MAX_SAFE_INTEGER + 1)).toThrow(RangeError);
   });
 
   it('should throw an error if number exceeds the negative limit', () => {
-    expect(() => new RangeIterable(-(2 ** 32)).toThrow(RangeError));
+    expect(() => new RangeIterable(Number.MIN_SAFE_INTEGER - 1)).toThrow(RangeError);
   });
 
   it('should correctly handle the maximum positive range', () => {

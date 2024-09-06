@@ -107,9 +107,25 @@ for await (const value of asyncIter) {
 ## Important Notes on Numbers
 - **The `digits: true` option**: Allows iterating over individual digits of a number, supporting both regular numbers and `BigInt`.
 - Numbers (`number`) are always processed as **_synchronous_** iterators, regardless of whether the `{ async: true }` option is passed.
+- **For negative numbers**: The negative sign is discarded, and the number is treated as positive. For example, -123 will be processed as [1, 2, 3].
+- **Floating-point numbers are not supported**: If a floating-point number is passed, a RangeError will be thrown because the number must be an integer to create a valid iterator.
 
+```javascript
+const negativeDigitsIter = new Iter8or(-98765, { digits: true });
+console.log([...negativeDigitsIter]); // [9, 8, 7, 6, 5]
+```
 ### Iteration Over Ranges (RangeIterable):
-Range iterators (`range`) are limited to numbers **_from -(2 ** 32 - 1) to 2 ** 32 - 1_**. This limitation is in place to prevent excessive memory and resource usage. If you try to create a range beyond these values, the library will throw a _RangeError_.
+Range iterators (`range`) are limited to numbers **_from -(2 ** 53 - 1) to 2 ** 53 - 1_**. This limitation is in place to prevent excessive memory and resource usage. If you try to create a range beyond these values, the library will throw a _RangeError_.
+- **Note**: When working with very large ranges, using the spread operator (e.g., ...rangeIter) can lead to memory and performance issues. Instead, it is recommended to manually process large ranges in a loop to avoid memory overflow:
+
+```javascript
+const largeRangeIter = new Iter8or(1000000000); // Very large range
+
+for (let num of largeRangeIter) {
+  // Process each number
+  if (num > 100) break; // Example: Stop after processing the first 100 numbers
+}
+```
 
 ### Example with RangeIterable:
 ```javascript

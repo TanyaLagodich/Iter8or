@@ -1,13 +1,15 @@
 export class RangeIterable {
   constructor(number) {
-    const MAX_LIMIT = 2 ** 32 - 1;
+    const MAX_LIMIT = Number.MAX_SAFE_INTEGER;
+    const MIN_LIMIT = Number.MIN_SAFE_INTEGER;
+
     if (
       typeof number !== 'number' ||
       number > MAX_LIMIT ||
-      number < -MAX_LIMIT
+      number < MIN_LIMIT
     ) {
       throw new RangeError(
-        'Number exceeds MAX_LIMIT. You can create a range up to ±(2 ** 32 - 1).'
+        `Number exceeds MAX_LIMIT. You can create a range up to +${MAX_LIMIT} and down to ${MIN_LIMIT}.`
       );
     }
     this.number = number;
