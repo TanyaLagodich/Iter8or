@@ -1,9 +1,15 @@
 export class DigitsIterable {
   constructor(number) {
     if (typeof number === 'bigint' || number > Number.MAX_SAFE_INTEGER) {
-      this.number = BigInt(number);
+      this.number = number >= 0n ? BigInt(number) : BigInt(number) * -1n;
     } else {
-      this.number = number;
+      const integerPart = Math.trunc(number);
+      const fractionalPart = number - integerPart;
+
+      if (fractionalPart !== 0) {
+        throw new RangeError(`The number ${number} cannot be converted to an Iterable because it is not an integer`);
+      }
+      this.number = Math.abs(number);
     }
   }
 

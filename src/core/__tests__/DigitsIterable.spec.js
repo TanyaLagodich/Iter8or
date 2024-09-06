@@ -47,4 +47,22 @@ describe('DigitsIterable', () => {
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     ]);
   });
+
+  it('should work with negative integers', () => {
+    const digits = new DigitsIterable(-123);
+    const result = [...digits];
+    expect(result).toEqual([3, 2, 1]);
+  });
+
+  it('should work with negative Bigint', () => {
+    const digits = new DigitsIterable(BigInt(-123n));
+    const result = [...digits];
+    expect(result).toEqual([3, 2, 1]);
+  });
+
+  it('shouldn\'t work with decimal integers', () => {
+    const digitsIter = () => new DigitsIterable(123.45);
+    expect(digitsIter).toThrow(RangeError);
+    expect(digitsIter).toThrow('The number 123.45 cannot be converted to an Iterable because it is not an integer');
+  });
 });
